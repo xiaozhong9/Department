@@ -1,0 +1,40 @@
+package com.ssm.service.admin.friendlylink;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ssm.mapper.FriendlyLinkMapper;
+import com.ssm.po.FriendlyLink;
+@Service
+public class FriendLyLinkServiceImpl implements FriendlyLinkService {
+	@Autowired
+	private FriendlyLinkMapper mapper;
+	@Override
+	public int saveFriendLink(FriendlyLink friendlyLink) {
+		return mapper.saveFriendLink(friendlyLink);
+	}
+	@Override
+	public int deleteLinkById(int id) {
+		return mapper.deleteLinkById(id);
+	}
+	@Override
+	public List<FriendlyLink> findAll() {
+		return mapper.findAll();
+	}
+	@Override
+	public int batchDeletion(int[] arr) {
+		return mapper.batchDeletion(arr)
+				;
+	}
+	@Override
+	public FriendlyLink findFriendlyLinkById(int id) {
+		return mapper.findFriendlyLinkById(id);
+	}
+	@Override
+	public int updateFriendlyLink(FriendlyLink friendlyLink) {
+		return mapper.updateFriendlyLink(friendlyLink);
+	}
+
+}

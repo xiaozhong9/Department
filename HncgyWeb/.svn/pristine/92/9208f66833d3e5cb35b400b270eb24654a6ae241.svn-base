@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.TeacherMapper">
+		
+		<select id="findAll" resultType="teacher">
+			select * from teacher
+		</select>
+		
+		<delete id="deleteTeacherById" parameterType="int">
+			delete from teacher where id=#{id}	
+		</delete>
+		
+		<update id="updateTeacher">
+			update teacher set 
+			name=#{name},
+			nickName=#{nickName},
+			education=#{education},
+			jobTitle=#{jobTitle},
+			job=#{job},
+			curriculum=#{curriculum},
+			speciality=#{speciality},
+			imgUrl=#{imgUrl}
+			where id=#{id}
+		</update>
+		
+		<select id="findTeacherById" parameterType="int" resultType="teacher">
+			select * from teacher where id=#{id}
+		</select>
+		
+		<insert id="saveTeacher" parameterType="teacher">
+		 insert teacher values(0,
+		 #{name},
+		 #{nickName},
+		 #{education},
+		 #{jobTitle},
+		 #{job},
+		 #{curriculum},
+		 #{speciality},
+		 #{imgUrl}
+		 );
+		</insert>
+		
+		<delete id="deleteTeachers" >
+			delete from teacher where id in
+			<foreach collection="ids" item="id" separator="," open="(" close=")" >
+				#{id}	
+			</foreach>		
+		</delete>
+</mapper>

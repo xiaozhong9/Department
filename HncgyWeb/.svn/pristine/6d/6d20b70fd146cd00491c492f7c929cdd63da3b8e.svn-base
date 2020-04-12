@@ -1,0 +1,45 @@
+package com.ssm.controller.admin;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ssm.service.admin.admin.IAdminService;
+
+@Controller
+public class AdminController {
+
+	@Autowired
+	private IAdminService adminService;
+
+	@RequestMapping(value = "/login/email", method = RequestMethod.POST)
+	@ResponseBody
+	public String loginEmail(String code,String email,HttpServletRequest request) throws Exception {
+		HttpSession session = request.getSession();
+		String key = (String) session.getAttribute("key");
+		String eqEmail= (String) session.getAttribute("email");
+		if(code.equals(key)&&email.equals(eqEmail)){
+			session.setAttribute("admin", adminService.selectByEmail(eqEmail));
+			return "success";
+		}
+		return "error";
+	}
+	
+	@RequestMapping(value = "/login/phone", method = RequestMethod.POST)
+	@ResponseBody
+	public String loginPhone(String code,String phone,HttpServletRequest request) throws Exception {
+		HttpSession session = request.getSession();
+		String key = (String) session.getAttribute("mCode");
+		String eqMobile= (String) session.getAttribute("mobile");
+		if(code.equals(key)&&phone.equals(eqMobile)){
+			session.setAttribute("admin", adminService.selectByPhone(eqMobile));
+			return "success";
+		}
+		return "error";
+	}
+}

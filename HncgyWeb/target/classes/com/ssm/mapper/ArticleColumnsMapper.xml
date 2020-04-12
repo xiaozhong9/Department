@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.ArticleColumnsMapper">
+    
+
+	<insert id="saveArticleColumn" parameterType="IncreaseArticle">
+	    	insert article_columns values
+			<foreach collection="column" item="item"  separator=",">
+				(#{article.Aid},#{article.title},#{item.columnID},#{item.columnTitle})	
+			</foreach>
+	</insert>
+	
+	<insert id="saveColArticles" parameterType="ColArticle">
+	    insert article_columns values
+			<foreach collection="articles" item="item"  separator=",">
+				(#{item.Aid},#{item.title},#{column.columnID},#{column.columnTitle})	
+			</foreach>
+	    
+	</insert>
+	
+	<delete id="deleteArticleColumns">
+	    	delete 
+	    	from article_columns 
+	    	where  Aid =#{Aid} and 
+	    	columnID in 
+			<foreach collection="array" item="arr"   separator=","  open="(" close=")">
+				#{arr}	
+			</foreach>
+	</delete>
+	
+	<select id="listArticlePage" resultType="article" parameterType="int">
+	SELECT Aid,title,author,editor,viewCount,subtitle,pubTime,state from article 
+	where Aid not in(select Aid from article_columns where columnID=#{columnID}) and state=1 order by pubTime desc
+	</select>
+	<!--批量删除文章栏目联系  -->
+	<delete id="removeArticles">
+	DELETE from Article_columns where Aid in <foreach collection="Aids" item="arr"   separator=","  open="(" close=")">
+				#{arr}	
+			</foreach>
+	
+	</delete>
+</mapper>

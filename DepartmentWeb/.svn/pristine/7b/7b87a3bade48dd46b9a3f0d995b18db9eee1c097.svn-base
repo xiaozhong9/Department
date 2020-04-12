@@ -1,0 +1,149 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+	<title>游客登录页面</title>
+	<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport" />
+	<meta content="yes" name="apple-mobile-web-app-capable" />
+	<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+	<meta content="telephone=no" name="format-detection" />
+<link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" type="text/css" />
+ <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.min.js"></script> 
+ <script type="text/javascript" src="${pageContext.request.contextPath}/js/layer.js"></script>
+<title>游客验证</title>
+<style type="text/css">
+</style>
+</head>
+<body>
+	<section class="aui-flexView">
+	
+	<section class="aui-scrollView">
+	
+		<div class="aui-sign-form">
+			<form action="">
+				<div class="aui-flex">
+					<i class="icon icon-email"></i>
+					<div class="aui-flex-box">
+						<input type="text" id="email" autocomplete="off" placeholder="邮箱">
+					</div>
+				</div>
+				<div class="aui-flex">
+					<i class="icon icon-code"></i>
+					<div class="aui-flex-box">
+						<input type="text"  id="code1" autocomplete="off" placeholder="输入验证码">
+					</div>
+					<div class="aui-code">
+						<input id="btnSendCode1" type="button" class="btn btn-default" value="获取验证码"  maxlength="6" onClick="sendMessage1()" />
+					</div>
+				</div>
+				<button class="aui-sign-login" id="btn" type="button" disabled="disabled">立即验证</button>
+			</form>
+
+		</div>
+
+	</section>
+</section>
+</body>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
+<script type="text/javascript">
+	$("#email").keyup(function(){
+		var v=$(this).val();
+		var boo=emailReg.test(v);
+		if(boo){
+			$("#btnSendCode1").css("background","#0066FF");
+			$("#btnSendCode1").css("color","white");
+		}else{
+			$("#btnSendCode1").css("background","");
+			$("#btnSendCode1").css("color","#999999");
+		}
+	})
+
+	var emailReg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+	var count = 60;
+	var InterValObj1;
+	var curCount1;
+	function sendMessage1() {
+		curCount1 = count;
+		var email = $.trim($('#email').val());
+		if(isEmpty(email)){
+			alert("请输入邮箱");
+			return;
+		}
+		if (!emailReg .test(email)) {
+			layer.msg("请输入正确的邮箱格式");
+			return false;
+		}
+		$.ajax({
+			url:"${pageContext.request.contextPath}/tourist/email/ver",
+			type:"post",
+			async: false,
+			data:{"email":email},
+			success:function(res){
+				if(res!=""){
+					$("#btn").removeAttr("disabled");
+					$("#btn").css('background-color',"#5f8cd0");
+				}
+			}
+		})
+		$("#btnSendCode1").attr("disabled", "true");
+		$("#btnSendCode1").val( + curCount1 + "秒再获取");
+		InterValObj1 = window.setInterval(SetRemainTime1, 1000);
+
+	}
+	function SetRemainTime1() {
+		if (curCount1 == 0) {
+			window.clearInterval(InterValObj1);
+			$("#btnSendCode1").removeAttr("disabled");
+			$("#btnSendCode1").val("重新发送");
+		}
+		else {
+			curCount1--;
+			$("#btnSendCode1").val( + curCount1 + "秒再获取");
+		}
+	}
+	function isEmpty(obj){
+		if(obj===null||obj===undefined||obj===""){
+			return true;
+		}
+		return false;
+	}
+	$("#btn").click(function(){
+		var email=$("#email").val();
+		var code1=$("#code1").val();
+		if(isEmpty(email)){
+			layer.msg("请输入邮箱");
+		return false;
+		}
+		if(isEmpty(code1)){
+			layer.msg("请输入验证码");
+		return false;
+		}
+		
+		$.ajax({
+			url:"${pageContext.request.contextPath}/tourist/email/verificationCode",
+			type:"post",
+			data:"code="+code1+"&email="+email,
+			success:function(res){
+				if("success"==res){
+					layer.msg("登录成功",{icon: 6});
+					window.parent.Main.comment=true;
+					window.parent.Main.email=email;
+					var index = parent.layer.getFrameIndex(window.name);
+					parent.layer.close(index);
+				}else{
+					layer.msg("验证码错误",{icon: 6});
+				}
+					
+			},
+			error:function(){
+				layer.msg("网页异常",{icon: 6});
+			}
+		})
+		
+	})
+		
+</script>
+</html>

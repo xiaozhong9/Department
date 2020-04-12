@@ -1,0 +1,142 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+ <html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>后台登录</title>
+<!-- Meta tag Keywords -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords"
+	content="Triple Forms Responsive Widget,Login form widgets, Sign up Web forms , Login signup Responsive web form,Flat Pricing table,Flat Drop downs,Registration Forms,News letter Forms,Elements" />
+<script>
+	addEventListener("load", function() {
+		setTimeout(hideURLbar, 0);
+	}, false);
+
+	function hideURLbar() {
+		window.scrollTo(0, 1);
+	}
+</script>
+<!-- Meta tag Keywords -->
+
+<!-- css files -->
+<link rel="stylesheet" href="static/css/style.css" type="text/css"
+	media="all" />
+<link rel="stylesheet" href="static/js/skin/layer.css" type="text/css"
+	media="all" />
+<link rel="stylesheet" href="static/css/s1.css" type="text/css"
+	media="all" />
+<!-- Style-CSS -->
+<link href="static/css/font-awesome.min.css" rel="stylesheet">
+<!-- Font-Awesome-Icons-CSS -->
+<!-- //css files -->
+
+<!-- web-fonts -->
+
+<!-- //web-fonts -->
+</head>
+<body>
+	<div class="main-bg">
+		<!-- title -->
+		<h1>Triple Forms</h1>
+		<!-- //title -->
+		<div class="sub-main-w3">
+			<div class="image-style"></div>
+			<!-- vertical tabs -->
+			<div class="vertical-tab">
+				<div id="section1" class="section-w3ls">
+					<input type="radio" name="sections" id="option1" checked> <label
+						for="option1" class="icon-left-w3pvt"><span
+						class="fa fa-mobile" aria-hidden="true"></span>Phone</label>
+					<article>
+					<form action="#" method="post">
+						<h3 class="legend">手机登录</h3>
+						<div class="input">
+							<span class="fa fa-mobile" aria-hidden="true"></span> <input
+								type="text" placeholder="Phone" name="Phone" id="phone1"
+								required />
+						</div>
+						<div class="input">
+							<i class="icon icon-code"></i>
+							<div class="aui-flex-box">
+								<input type="text" id="code1" autocomplete="off"
+									placeholder="输入验证码" >
+							</div>
+							<div class="aui-code">
+								<input id="btnSendCode1" type="button" class="btn btn-default"
+									value="获取验证码" onClick="sendMessage1()" />
+							</div>
+						</div>
+						<button type="button" onClick="phoneSubmit()" class="btn submit">Login</button>
+						<a href="#" class="bottom-text-w3ls"></a>
+					</form>
+					</article>
+				</div>
+				<div id="section2" class="section-w3ls">
+					<input type="radio" name="sections" id="option2"> <label
+						for="option2" class="icon-left-w3pvt"><span
+						class="fa fa-envelope" aria-hidden="true"></span>Email</label>
+					<article>
+					<form action="#" method="post">
+						<h3 class="legend">邮箱登录</h3>
+						<div class="input">
+							<span class="fa fa-envelope" aria-hidden="true"></span> <input
+								type="text" placeholder="	" name="Phone" id="email" required />
+						</div>
+						<div class="input">
+							<i class="icon icon-code"></i>
+							<div class="aui-flex-box">
+								<input type="text" id="code2" autocomplete="off"
+									placeholder="输入验证码">
+							</div>
+							<div class="aui-code">
+								<input id="btnSendCode2" type="button" class="btn btn-default"
+									value="获取验证码" onClick="sendMessage2()" />
+							</div>
+						</div>
+						<button type="button" class="btn submit" onClick="emailSubmit()">Login</button>
+						<a href="#" class="bottom-text-w3ls"></a>
+					</form>
+					</article>
+				</div>
+				<div id="section3" class="section-w3ls">
+					<input type="radio" name="sections" id="option3"> <label
+						for="option3" class="icon-left-w3pvt"><span
+						class="fa fa-lock" aria-hidden="true"></span>password</label>
+					<article>
+					<form >
+						<h3 class="legend last">密码登录</h3>
+						<div class="input">
+							<span class="fa fa-user-circle" aria-hidden="true"></span> <input
+								type="text" id="account" placeholder="Account" name="account"  />
+						</div>
+						<div class="input">
+							<span class="fa fa-lock" aria-hidden="true"></span> <input
+								type="password" id="password" placeholder="password" name="password"  />
+						</div>
+						<button  type="button" onClick="accountSubmit()" class="btn submit last-btn">Login</button>
+					
+					</form>
+					</article>
+				</div>
+			</div>
+			<!-- //vertical tabs -->
+			<div class="clear"></div>
+		</div>
+		<!-- copyright -->
+		<div class="copyright">
+			<h2>
+				&copy; 2019 Triple Forms. All rights reserved | Design by <a
+					href="" target="_blank">W3layouts</a>
+			</h2>
+		</div>
+		<!-- //copyright -->
+	</div>
+</body>
+<script type="text/javascript" src="static/js/jquery.min.js"></script>
+<script type="text/javascript" src="static/js/layer.js"></script>
+<script type="text/javascript" src="static/my/login.js">
+</script>
+
+</html>

@@ -1,0 +1,53 @@
+package com.ssm.controller.api;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ssm.common.ApiResponseEnum;
+import com.ssm.common.ApiResponseObject;
+import com.ssm.common.ApiServiceException;
+import com.ssm.po.ArticleColumns;
+import com.ssm.po.Teacher;
+import com.ssm.service.api.teacher.TeacherServiceApi;
+
+@RestController
+@RequestMapping("api/teacher")
+public class TeacherApiController extends AbstractApiController {
+
+	@Autowired
+	private TeacherServiceApi teacherService;
+	@RequestMapping(value="/get/teachers",method=RequestMethod.POST)
+	public ApiResponseObject getTeachers()throws ApiServiceException{
+		
+		return responseJSON(ApiResponseEnum.SUCCESS.getCode(), ApiResponseEnum.SUCCESS.getName(),
+				teacherService.getTeachers());
+		
+	}
+	@RequestMapping(value="/get/teacher",method=RequestMethod.POST)
+	public ApiResponseObject getTeacher(@RequestBody int id)throws ApiServiceException{
+		Teacher teacher = teacherService.getTeacher(id);
+		if(teacher!=null){
+		return responseJSON(ApiResponseEnum.SUCCESS.getCode(), ApiResponseEnum.SUCCESS.getName(),
+				teacher);
+		}
+		return responseJSON(ApiResponseEnum.ERROR_DATA_EMPTY.getCode(),ApiResponseEnum.ERROR_DATA_EMPTY.getName(),null);
+		
+	}
+	
+	@RequestMapping(value="page/turn",method=RequestMethod.POST)
+	public ApiResponseObject lastAndNextTeacher(@RequestBody int id )throws ApiServiceException {
+		Teacher nextTeacher = teacherService.getNextTeacher(id);
+		Teacher lastTeacher = teacherService.getLastTeacher(id);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("nextTeacher", nextTeacher);
+		hashMap.put("lastTeacher", lastTeacher);
+		return responseJSON(ApiResponseEnum.SUCCESS.getCode(), ApiResponseEnum.SUCCESS.getName(),
+				hashMap);
+	}
+}

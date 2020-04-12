@@ -1,0 +1,13 @@
+package com.ssm.service.activity;
+
+import com.ssm.common.ApiResponseObject;
+import com.ssm.common.ApiServiceException;
+
+public interface ActivityService {
+	/**
+	 * 获取首页活动公告
+	 * @return
+	 * @throws ApiServiceException
+	 */
+	public ApiResponseObject indexActivitys() throws ApiServiceException;
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.AdminMapper">
+    	
+    	<select id="login" parameterType="admin" resultType="admin">
+    		select * from Admin where account =#{account} and password=#{password}
+    	</select>
+
+		<select id="selectByEmail" resultType="admin">
+				select * from `admin` where email=#{email}
+		</select>
+		
+		<select id="selectByPhone" resultType="admin">
+				select * from `admin` where phone=#{phone}
+		</select>
+</mapper>

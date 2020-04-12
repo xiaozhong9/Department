@@ -1,0 +1,114 @@
+package com.ssm.controller.api;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.github.pagehelper.PageInfo;
+import com.ssm.common.ApiResponseEnum;
+import com.ssm.common.ApiResponseObject;
+import com.ssm.common.ApiServiceException;
+import com.ssm.po.ColumnArticleTitle;
+import com.ssm.po.Article;
+import com.ssm.po.Column;
+import com.ssm.service.api.column.ColumnService;
+
+@RestController
+@RequestMapping("api/column")
+public class ColumnsApiController extends AbstractApiController {
+	@Autowired
+	ColumnService columnService;
+	
+	@RequestMapping(value="/get/article/page",method=RequestMethod.POST)
+	public ApiResponseObject findArticleByPage(@RequestBody Map<String,Integer> map) {
+		Integer columnID = map.get("columnID");
+		Integer currentPage = map.get("currentPage");
+		Integer pageSize = map.get("pageSize");
+		PageInfo<Article> findArticleByPage = columnService.findArticleByPage(columnID, currentPage, pageSize);
+		return responseJSON(ApiResponseEnum.SUCCESS.getCode(), ApiResponseEnum.SUCCESS.getName(), findArticleByPage);
+	}
+	@RequestMapping(value="/is/column/title",method=RequestMethod.POST)
+	public ApiResponseObject isColumnTitle(@RequestBody int[] arr) {
+
+		int Aid = arr[0];
+		int columnID = arr[1];
+
+		String columnTitle = columnService.getColumnTitle(Aid, columnID);
+		return responseJSON(ApiResponseEnum.SUCCESS.getCode(), ApiResponseEnum.SUCCESS.getName(), columnTitle);
+	}
+	@RequestMapping(value="/get/column/title",method=RequestMethod.POST)
+	public ApiResponseObject getColumnTitle(@RequestBody int columnID) {
+		
+		String columnTitle = columnService.getColumnTitleById(columnID);		
+		
+		return responseJSON(ApiResponseEnum.SUCCESS.getCode(), ApiResponseEnum.SUCCESS.getName(), columnTitle);
+	}
+
+	
+	
+	@RequestMapping(value="/get/column/articles",method=RequestMethod.POST)
+	public ApiResponseObject getColumnArticles(@RequestBody int columnID) throws ApiServiceException {
+		List<Article> article = columnService.getArticles(columnID);
+		return responseJSON(ApiResponseEnum.SUCCESS.getCode(), ApiResponseEnum.SUCCESS.getName(), article);
+	}
+
+	@RequestMapping(value="/get/column/titles",method=RequestMethod.POST)
+	public ApiResponseObject getTitles() throws ApiServiceException {
+		 List<Column> columnTitles = columnService.getColumnTitles();
+		if (columnTitles == null) {
+			return responseJSON(ApiResponseEnum.ERROR_DATA_EMPTY.getCode(), ApiResponseEnum.ERROR_DATA_EMPTY.getName(),
+					null);
+		}
+		return responseJSON(ApiResponseEnum.SUCCESS.getCode(), ApiResponseEnum.SUCCESS.getName(), columnTitles);
+	}
+
+	/**
+	 * 获取所有栏目对象
+	 * 
+	 * @return
+	 * @throws ApiServiceException
+	 */
+	@RequestMapping(value="/get/columns",method=RequestMethod.POST)
+	public ApiResponseObject getColumns() throws ApiServiceException {
+		List<Column> columns = columnService.getColumns();
+		if (columns == null) {
+			return responseJSON(ApiResponseEnum.ERROR_DATA_EMPTY.getCode(), ApiResponseEnum.ERROR_DATA_EMPTY.getName(),
+					null);
+		}
+		return responseJSON(ApiResponseEnum.SUCCESS.getCode(), ApiResponseEnum.SUCCESS.getName(), columns);
+	}
+
+	/**
+	 * 获取首页 所有 栏目 标题
+	 * 
+	 * @return
+	 * @throws ApiServiceException
+	 */
+	@RequestMapping(value="/get/column/article/title",method=RequestMethod.POST)
+	public ApiResponseObject getColumnArticleTitle() throws ApiServiceException {
+		List<Integer> index = columnService.index();
+		if (index == null) {
+			return responseJSON(ApiResponseEnum.ERROR_DATA_EMPTY.getCode(), ApiResponseEnum.ERROR_DATA_EMPTY.getName(),
+					null);
+		}
+
+		List<ColumnArticleTitle> columns = columnService.getColumnArticleTitle(index);
+		
+		
+		if (columns == null) {
+			return responseJSON(ApiResponseEnum.ERROR_DATA_EMPTY.getCode(), ApiResponseEnum.ERROR_DATA_EMPTY.getName(),
+					null);
+		}
+		return responseJSON(ApiResponseEnum.SUCCESS.getCode(), ApiResponseEnum.SUCCESS.getName(), columns);
+	}
+	@RequestMapping(value="hot/articles",method=RequestMethod.POST)
+	public ApiResponseObject hotArticles(@RequestBody int columnId){
+		return null;
+	}
+
+}

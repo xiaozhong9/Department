@@ -1,0 +1,12 @@
+package com.ssm.service.admin.oline;
+
+import java.util.HashMap;
+import java.util.List;
+
+public interface CommentService {
+	/**
+	 * 获取需要审核的评论
+	 * @return
+	 */
+	public List<HashMap<String,Object>> findOlineByState();
+}

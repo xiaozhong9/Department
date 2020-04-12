@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.TodayMapper">
+
+	<!-- 获取今日关注 -->
+	<select id="findAll" resultType="map">
+		SELECT distinct
+		a.Aid,a.title,a.author,a.viewCount,a.pubTime,
+		(select count(*) from
+		today t where t.aid=hot.aid) as isToday
+		FROM `hotarticle` hot
+		left join
+		article a
+		on hot.aid=a.Aid
+	</select>
+	<!-- 插入今日关注 -->
+	<insert id="saveToday" parameterType="today">
+		insert today
+		values(0,#{aid},#{title});
+	</insert>
+	<!-- 删除今日关注 -->
+	<delete id="delToday" parameterType="int">
+		delete from today where
+		aid=#{aid}
+	</delete>
+
+	<!-- 获取指定文章 -->
+	<select id="getArticle" resultType="article">
+		select * from article where aid=#{id}
+	</select>
+
+	<!-- 判断文章是否存在 -->
+	<select id="isExistence" parameterType="int" resultType="int">
+		select
+		count(*) from today where aid=#{id}
+	</select>
+	
+	<!-- 首页显示今日关注 -->
+	<select id="findAllToday" resultType="map">
+		select t.id,
+		a.title,a.Aid,left(a.content,30) as content
+		from today t
+		left join article a
+		on t.aid=a.Aid
+	</select>
+	<!-- 下一篇 -->
+	<select id="getNextToday" parameterType="int" resultType="today">
+		SELECT * FROM `today`
+		where id &gt; #{id} limit 1
+	</select>
+	<!-- 上一篇 -->
+	<select id="getLastToday" parameterType="int" resultType="today">
+	SELECT * FROM `today`
+		where id &lt; #{id} limit 1
+	</select>
+</mapper>

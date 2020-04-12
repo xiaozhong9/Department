@@ -1,0 +1,55 @@
+﻿/* 织梦58（dede58.com）做最好的织梦整站模板下载网站 */
+* {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	text-decoration: none;
+	font-family: "Microsoft YaHei";
+}
+.clearfix, .c {
+	zoom: 1;
+	clear: both;
+}
+.clearfix:after, .clearfix:before, .c:after, .c:before {
+	display: table;
+	content: "";
+}
+.clearfix:after, .c:after {
+	clear: both;
+}
+.l {
+	float: left;
+}
+.r {
+	float: right;
+}
+.jz {
+	width: 1200px;
+	margin: 0 auto;
+}
+a {
+	color: #3C3C3C;
+	font-size: 14px;
+	font-family: "微软雅黑";
+}
+/* Write your styles */
+.am-tab-panel_more {
+	font-size: 12px;
+	width: 100px;
+	height: 32px;
+	line-height: 30px;
+	text-align: center;
+	border: 1px solid #EEEEEE;
+	-webkit-transition: all 0.4s;
+	-moz-transition: all 0.4s;
+	-ms-transition: all 0.4s;
+	-o-transition: all 0.4s;
+	transition: all 0.4s;
+}
+.am-tab-panel_more:hover {
+	background-color: #108dee;
+	color: #ffffff;
+}
+.am-tab-panel_more span {
+	font-family: SimSun;
+}

@@ -1,0 +1,27 @@
+package com.ssm.mapper;
+
+import java.util.List;
+
+import com.ssm.po.Activity;
+
+public interface ActivityMapper {
+	/**
+	 * 获取所有活动公告
+	 * @return
+	 */
+	public List<Activity> findAll();
+
+	/**
+	 * 删除活动公告
+	 * @param id
+	 * @return
+	 */
+	public int delActivity(int id);
+	
+	/**
+	 * 修改活动公告
+	 * @param id
+	 * @return
+	 */
+	public int updateActivity(Activity activity);
+}

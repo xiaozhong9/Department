@@ -1,0 +1,66 @@
+package com.ssm.controller.api;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.github.pagehelper.PageInfo;
+import com.ssm.common.ApiResponseEnum;
+import com.ssm.common.ApiResponseObject;
+import com.ssm.common.ApiServiceException;
+import com.ssm.po.Article_Oline;
+import com.ssm.po.Oline;
+import com.ssm.service.api.article_oline.Article_OlineService;
+import com.ssm.service.api.online.CheckTextApi;
+import com.ssm.service.api.online.OlineService;
+
+@RestController
+@RequestMapping("api/oline")
+public class OlineApiController extends AbstractApiController{
+	@Autowired
+	private OlineService olineService;
+	@Autowired
+	private Article_OlineService article_oline;
+	@RequestMapping(value="save/comment" ,method = RequestMethod.POST)
+	public ApiResponseObject isAdopt(@RequestBody Map<String,Object> map) throws ApiServiceException{
+		CheckTextApi check=new CheckTextApi();
+		String comment = (String) map.get("comment");
+		int state = check.check(comment);
+		if(state==1){
+			return responseJSON(ApiResponseEnum.FAIL.getCode(), ApiResponseEnum.FAIL.getName(), state);
+		}
+		Oline oline=new Oline();
+		oline.setContent(comment);
+		oline.setState(state);
+		oline.setTourist((String)map.get("email"));//插入评论表
+		int oline_ID = olineService.insertOline(oline);
+		
+		if(oline_ID>0){
+		Article_Oline ao=new Article_Oline();
+		ao.setOline_id(oline.getOid());
+		ao.setColumn_id((int)map.get("columnID"));
+		ao.setArticle_id((int)map.get("articleID"));
+		article_oline.insertArtOli(ao);//插入中间表
+		 return responseJSON(ApiResponseEnum.SUCCESS.getCode(), ApiResponseEnum.SUCCESS.getName(), oline);
+		}
+		return responseJSON(ApiResponseEnum.Exception.getCode(), ApiResponseEnum.Exception.getName(), null);
+	}
+	@RequestMapping(value="find/olines",method=RequestMethod.POST)
+	public ApiResponseObject findOlineByArt(@RequestBody Map<String,Integer>map) throws ApiServiceException{
+		int article_Id = map.get("article_Id");
+		int column_Id = map.get("column_Id");
+		int pageSize= map.get("currentPage");
+		
+		
+		if(article_Id<=0||column_Id<=0){
+			return responseJSON(ApiResponseEnum.ERROR_PARAM.getCode(), ApiResponseEnum.ERROR_PARAM.getName(), null);
+		}
+		PageInfo<Oline> findOlineByArt = olineService.findOlineByArt(article_Id, column_Id,pageSize);
+		return responseJSON(ApiResponseEnum.SUCCESS.getCode(), ApiResponseEnum.SUCCESS.getName(), findOlineByArt);
+	}
+}

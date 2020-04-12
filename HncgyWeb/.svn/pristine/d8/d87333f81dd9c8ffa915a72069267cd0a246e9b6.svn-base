@@ -1,0 +1,13 @@
+package com.ssm.service.admin.oline;
+
+import java.util.List;
+
+import com.ssm.po.Oline;
+
+public interface OlineService {
+	/**
+	 * 获取带审核的评论
+	 * @return
+	 */
+	public List<Oline> findOlineByState();
+}

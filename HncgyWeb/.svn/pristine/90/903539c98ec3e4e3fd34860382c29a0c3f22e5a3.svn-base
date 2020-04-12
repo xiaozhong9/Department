@@ -1,0 +1,13 @@
+package com.ssm.service.admin.teacher;
+
+import java.util.List;
+
+import com.ssm.po.Teacher;
+
+public interface TeacherService {
+	/**
+	 * 获取所有教师
+	 * @return
+	 */
+	public List<Teacher> findAll();
+}

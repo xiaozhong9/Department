@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- environments、mappers两部分已整合到Spring的配置文件中，本文件不再配置 -->
+	<settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+	
+	
+	<!-- 批量指定类型别名 --> 
+	<typeAliases>
+		<package name="com.ssm.po"/>
+	</typeAliases>
+	
+	   <!-- mybatis分页插件 -->
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageHelper">
+        	   <property name="dbType" value="mysql"/>
+        </plugin>
+    </plugins>
+	
+</configuration>

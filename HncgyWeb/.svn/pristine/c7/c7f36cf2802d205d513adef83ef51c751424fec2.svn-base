@@ -1,0 +1,40 @@
+package com.ssm.service.admin.oline;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.github.pagehelper.PageInfo;
+
+public interface CommentService {
+	/**
+	 * 获取需要审核的评论
+	 * @param currentPage 第几页
+	 * @param pageSize	一页多少行
+	 * @return
+	 */
+	public PageInfo<List<Map<String,Object>>> findOlineByState(int currentPage, int pageSize,int state);
+	
+	/**
+	 * 获取不通过评论
+	 *
+	 * @return
+	 */
+	 
+	public List<HashMap<String,Object>> findNotPass(int state);
+	
+	/**
+	 * 审核通过
+	 * @param id
+	 * @return
+	 */
+	public int updateStateById(int id);
+	
+
+	/**
+	 * 审核不通过
+	 * @param id
+	 * @return
+	 */
+	public int notPass(int id);
+}

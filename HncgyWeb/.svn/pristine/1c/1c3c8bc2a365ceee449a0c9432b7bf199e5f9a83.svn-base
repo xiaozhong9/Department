@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.Article_OlineMapper" >
+
+
+	<!-- 中间表插入数据 -->
+	<insert id="insertArtOli" parameterType="Article_Oline">
+		insert article_oline value(0,#{article_id},#{oline_id},#{column_id})
+	</insert>
+	
+	<delete id="batchDel">
+		delete from article_oline where oline_id in
+		<foreach collection="arr" item="item" separator="," open="(" close=")">
+			#{item}
+		</foreach>
+	</delete>
+</mapper>

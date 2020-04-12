@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+        <!-- 加载数据库连接参数配置文件  -->
+	<context:property-placeholder location="classpath:jdbc.properties"  />
+	<!-- 配置Controller扫描 -->
+	<context:component-scan base-package="com.ssm.controller,com.ssm.test" />
+	<!-- 配置注解驱动 代替了映射器与适配器的配置 默认加载了json转换的解析器 -->
+	<mvc:annotation-driven>
+<mvc:message-converters>
+<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+<property name="supportedMediaTypes">
+<list>
+<value>text/plain;charset=UTF-8</value>
+</list>
+</property>
+</bean>
+</mvc:message-converters>
+</mvc:annotation-driven>
+	<!-- 对静态资源放行 -->
+	<mvc:default-servlet-handler />
+
+	<mvc:annotation-driven />
+	<mvc:resources location="/img/" mapping="/img/**" />
+	<mvc:resources location="/static/" mapping="/static/**" />
+	<mvc:resources location="/css/" mapping="/css/**" />
+	<mvc:resources location="/js/" mapping="/js/**" />
+	<!-- 配置视图解析器 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!-- <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" 
+			/> <property name="order" value="1" /> -->
+		<!-- 前缀 -->
+		<property name="prefix" value="/WEB-INF/admin/" />
+		<!-- 后缀 -->
+		<property name="suffix" value=".jsp" />
+		<!-- 设置最高权限 -->
+		<property name="order" value="10"></property>
+	</bean>
+
+
+
+	<!-- 图片上传配置 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="104857600" />
+		<property name="maxInMemorySize" value="4096" />
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
+
+
+	<!-- 注解配置处理器适配器 -->
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<bean
+					class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"></bean>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 配置拦截器 -->
+	<!--配置拦截器, 多个拦截器,顺序执行 -->
+	<!-- <mvc:mapping path="/**" /> 中path的取值说明 /**的意思是所有文件夹及里面的子文件夹 /*是所有文件夹，不含子文件夹 
+		/是web项目的根目录 -->
+<!-- 	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<mvc:exclude-mapping path="/phone" />
+			<mvc:exclude-mapping path="/email" />
+			<mvc:exclude-mapping path="/login/email" />
+			<mvc:exclude-mapping path="/login/phone" />
+			<mvc:exclude-mapping path="/static/**" />
+			<mvc:exclude-mapping path="/css/**" />
+			<mvc:exclude-mapping path="/" />
+			<mvc:exclude-mapping path="/api/**" />
+			<bean id="HandlerInterceptor" class="com.ssm.interceptor.HandlerInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+ -->
+
+</beans>

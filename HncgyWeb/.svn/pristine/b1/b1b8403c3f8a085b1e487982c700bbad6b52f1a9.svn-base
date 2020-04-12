@@ -1,0 +1,15 @@
+package com.ssm.service.admin.oline;
+
+import java.util.List;
+
+import com.ssm.po.Oline;
+
+public class OlineServiceImpl implements OlineService {
+
+	@Override
+	public List<Oline> findOlineByState() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

@@ -1,0 +1,232 @@
+package com.ssm.controller.admin;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.ssm.po.Img;
+import com.ssm.service.admin.img.ImgService;
+
+import net.coobird.thumbnailator.Thumbnails;
+
+@Controller
+@RequestMapping("img")
+public class PictureController {
+	@Autowired
+	private ImgService imgService;
+	private int width = 1920;
+	private int height = 446;
+	@Value("${pic.url}")
+	private String pUrl;
+
+	// 图片上传
+	@RequestMapping(value = "/upload", method = RequestMethod.POST)
+	@ResponseBody
+	public String uploadImage(@RequestParam(value = "file") MultipartFile file, int catagory)
+			throws IllegalStateException, IOException {
+		if (file != null) {
+			// 原名字
+			String name = file.getOriginalFilename();
+			// 上传文件位置
+			String uploadPath = this.pUrl;
+			// 扩展名
+			String type = name.substring(name.lastIndexOf("."));
+			// 随机号
+			String uuid = UUID.randomUUID().toString();
+			// 路径
+			String path = uploadPath + uuid + type;
+			// 新名字
+			String newName = uuid + type;
+			File f = new File(path);
+			InputStream inputStream = file.getInputStream();
+			// 按指定大小把图片进行缩放
+			if (catagory == 1) {
+				Thumbnails.of(inputStream).size(width, height).keepAspectRatio(false).toFile(f);
+			} else {
+				file.transferTo(f);
+			}
+			Img pic = new Img();
+			pic.setCatagory(catagory);
+			pic.setType(type);
+			pic.setName(name);
+			pic.setImgName(newName);
+			pic.setUrl(path);
+			int saveImg = imgService.saveImg(pic);
+			if (saveImg >= 1) {
+				return "success";
+			}
+		}
+		return "error";
+	}
+
+	// 多图上传
+	@RequestMapping(value = "/uploads", method = RequestMethod.POST)
+	@ResponseBody
+	public String uploads(@RequestParam(value = "file") MultipartFile file) throws IllegalStateException, IOException {
+		return uploadImage(file, 0);
+	}
+
+	@RequestMapping(value = "/loop/all", method = RequestMethod.POST)
+	@ResponseBody
+	public List<Img> getLoopImgs() {
+		List<Img> list = imgService.findLoopAll();
+		if (list != null) {
+			return list;
+		}
+		return null;
+	}
+
+	@RequestMapping(value = "/PictureRecovery/all", method = RequestMethod.POST)
+	@ResponseBody
+	public List<Img> getpictureImgs() {
+		List<Img> list = imgService.PictureRecovery();
+		return list;
+	}
+
+	@RequestMapping(value = "/Picture/all", method = RequestMethod.POST)
+	@ResponseBody
+	public List<Img> getPictureAll() {
+		List<Img> list = imgService.getPictureAll();
+		return list;
+	}
+
+	@RequestMapping(value = "/show", method = RequestMethod.POST)
+	@ResponseBody
+	public Img show(int id) {
+		Img img = imgService.selectImgById(id);
+		return img;
+	}
+
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public String delete(int id) {
+		int deleteImgById = imgService.deleteImgById(id);
+		if (deleteImgById > 0) {
+			return "success";
+		}
+		return "error";
+	}
+
+	@RequestMapping(value = "/dustbin/img", method = RequestMethod.POST)
+	@ResponseBody
+	public String dustbinImg(int id) {
+		Img selectImgById = imgService.selectImgById(id);
+		int deleteImgById = imgService.dustbinImg(id);
+		if (deleteImgById > 0) {
+			File file = new File(selectImgById.getUrl());
+			file.delete();
+			return "success";
+		}
+		return "error";
+	}
+
+	@RequestMapping(value = "/remove/img", method = RequestMethod.POST)
+	@ResponseBody
+	public String removeImg(int id) {
+		int deleteImgById = imgService.removeImg(id);
+		if (deleteImgById > 0) {
+			return "success";
+		}
+		return "error";
+	}
+
+	@RequestMapping(value = "reduction/picture", method = RequestMethod.POST)
+	@ResponseBody
+	public String reductionPicture(int id) {
+		int deleteImgById = imgService.reductionPicture(id);
+		if (deleteImgById > 0) {
+			return "success";
+		}
+		return "error";
+	}
+
+	@RequestMapping(value = "/remvoe/imgs", method = RequestMethod.POST)
+	@ResponseBody
+	public String remvoeImgs(int[] ids) {
+		int deleteImgById = imgService.deleteSelection(ids);
+		if (deleteImgById > 0) {
+			return "success";
+		}
+		return "error";
+	}
+
+	@RequestMapping(value = "/remvoe/dustbinimgs", method = RequestMethod.POST)
+	@ResponseBody
+	public String remvoedustbinimgs(int[] ids) {
+
+		String[] findUrlById = imgService.findUrlById(ids);
+		int deleteImgById = imgService.remvoeDustbinImgs(ids);
+		File f;
+		if (deleteImgById > 0) {
+			for (int i = 0; i < findUrlById.length; i++) {
+				f = new File(findUrlById[i]);
+				f.delete();
+			}
+			return "success";
+		}
+		return "error";
+	}
+
+	@RequestMapping(value = "/remvoe/imgs/recycle", method = RequestMethod.POST)
+	@ResponseBody
+	public String remvoe(int[] ids) {
+		int deleteImgById = imgService.remvoeImgs(ids);
+		if (deleteImgById > 0) {
+			return "success";
+		}
+		return "error";
+	}
+
+
+	@RequestMapping(value = "recognition/url", method = RequestMethod.POST, produces = "text/html;charset=UTF-8;")
+	@ResponseBody
+	public String imageRecognitionURL(String url) throws IOException {
+		System.err.println("===================================url="+url);
+		String ocrGeneral = imgService.ocrGeneral(url);
+		return ocrGeneral;
+	}
+	
+	// 图片上传,文章图片识别
+		@RequestMapping(value = "/upload/article", method = RequestMethod.POST)
+		@ResponseBody
+		public String uploadImage(@RequestParam(value = "file") MultipartFile file)
+				throws IllegalStateException, IOException {
+			if (file != null) {
+				// 原名字
+				String name = file.getOriginalFilename();
+				// 上传文件位置
+				String uploadPath = this.pUrl;
+				// 扩展名
+				String type = name.substring(name.lastIndexOf("."));
+				// 随机号
+				String uuid = UUID.randomUUID().toString();
+				// 路径
+				String path = uploadPath + uuid + type;
+				// 新名字
+				String newName = uuid + type;
+				File f = new File(path);
+					file.transferTo(f);
+				Img pic = new Img();
+				pic.setType(type);
+				pic.setName(name);
+				pic.setImgName(newName);
+				pic.setUrl(path);
+				int saveImg = imgService.saveImg(pic);
+				if (saveImg >= 1) {
+					return path;
+				}
+			}
+			return "error";
+		}
+}

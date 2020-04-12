@@ -1,0 +1,80 @@
+package com.ssm.service.column;
+
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.ssm.common.ApiResponseObject;
+import com.ssm.common.ApiServiceException;
+import com.ssm.common.HttpClientTool;
+import com.ssm.po.Column;
+
+
+@Service
+public class ColumnServiceImpl implements ColumnService {
+	@Resource
+	private HttpClientTool httpClientTool;
+
+	@Override
+	public ApiResponseObject getArticles(int columnID) throws ApiServiceException {
+		return httpClientTool.doPostJson(HttpClientTool.API_URL_GET_COLUMN, columnID);
+	}
+
+	@Override
+	public ApiResponseObject countSize(int columnID) throws ApiServiceException {
+		return httpClientTool.doPostJson(HttpClientTool.API_URL_COLUMN_SIZE, columnID);
+	}
+
+	@Override
+	public ApiResponseObject saveColumn(Column column) throws ApiServiceException {
+		return httpClientTool.doPostJson(HttpClientTool.API_URL_ADD_COLUMN, column);
+	}
+
+	@Override
+	public ApiResponseObject updateColumn(Column column) throws ApiServiceException {
+		return httpClientTool.doPostJson(HttpClientTool.API_URL_UPDATE_COLUMN, column);
+	}
+
+	@Override
+	public ApiResponseObject updateColumn(int columnID) throws ApiServiceException {
+		return httpClientTool.doPostJson(HttpClientTool.API_URL_UPDATE_COLUMN, columnID);
+	}
+
+	@Override
+	public ApiResponseObject getColumnTitles() throws ApiServiceException {
+		return httpClientTool.doPostJson(HttpClientTool.API_URL_GET_COLUMN_TITLES, null);
+	}
+
+	@Override
+	public ApiResponseObject getColumns() throws ApiServiceException {
+		return httpClientTool.doPostJson(HttpClientTool.API_URL_GET_COLUMNS, null);
+	}
+
+	@Override
+	public ApiResponseObject getColumnArticleTitle() throws ApiServiceException {
+		return httpClientTool.doPostJson(HttpClientTool.API_URL_GET_COLUMN_ARTICLE_TITLE, null);
+	}
+
+	@Override
+	public ApiResponseObject index() throws ApiServiceException {
+		return httpClientTool.doPostJson(HttpClientTool.API_URL_INDEX, null);
+	}
+
+	@Override
+	public ApiResponseObject getColumnTitleById(int columnID) throws ApiServiceException {
+		return httpClientTool.doPostJson(HttpClientTool.API_URL_GET_COLUMN_TITLE, columnID);
+	}
+
+	@Override
+	public ApiResponseObject findArticleByPage(Map<String,Integer> map) throws ApiServiceException {
+		return httpClientTool.doPostJson(HttpClientTool.API_URL_COLUMN_PAGE, map);
+	}
+
+	@Override
+	public ApiResponseObject findHotArticles(int columnId) throws ApiServiceException {
+		return httpClientTool.doPostJson(HttpClientTool.API_URL_GET_HOTARTICLES, columnId);
+		
+	}
+}

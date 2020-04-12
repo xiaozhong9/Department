@@ -1,0 +1,159 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>图片识别</title>
+
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/css/my.css">
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/js/vue.js"></script>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/js/vue-resource.js"></script>
+
+</head>
+<body>
+
+	<div id="box">
+		<span class="row row1"></span> <span class="row row2"></span> <span
+			class="col col2"></span> <span class="col col1"></span>
+		<h1>图片识别</h1>
+		<font class="f" >(按Enter键将文字加入文章)</font>
+		<div id="left">
+			<img onerror="err(this)"
+				src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2262341960,3914408792&fm=26&gp=0.jpg"
+				alt="图片不存在或路径不对" class="img">
+
+		</div>
+		<div id="upload">
+			<button id="btn">上传本地照片</button>
+
+			<font color="#ddd">或</font> <input id="url" type="text" name=""
+				placeholder="使用网络图片,请粘贴图片url">
+			<button @click="btn2Click()" id="btn2">检测</button>
+		</div>
+		<h3 id="re">识别结果</h3>
+		<div id="result">
+			<span class="zrow zrow1"></span> <span class="zrow zrow2"></span> <span
+				class="zcol zcol2"></span> <span class="zcol zcol1"></span>
+			<textarea class="txt" onFocus="jiaodian()" onBlur="blu()" id="t"
+				rows="" cols="">{{result}}</textarea>
+		</div>
+		<form action="" id="fileUpdate-form">
+			<input type="file" name="filename" id="fileUpdate-input"
+				style="display: none" />
+		</form>
+	</div>
+</body>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript">
+
+
+	function enter(){
+ 	$(document).keyup(function(event){
+		if(event.keyCode==13){
+			var value=$(".txt").val();			
+			window.parent.editor1.insertHtml(value);
+			var index = parent.layer.getFrameIndex(window.name);
+			parent.layer.close(index);
+		}
+	})
+	}
+	$(function(){
+		enter();
+	})
+	function jiaodian(){
+		 $(document).unbind();
+	
+	}
+	function blu(){
+		enter();
+	}
+	function err(obj){
+		alert("错了");
+		 $(".txt").val("1");
+		 vue.result="2";
+	}
+		var vue=new Vue({
+			 el:"#box",
+			 data:{
+				 items:[
+					 {
+						 itemstring:"",
+						 itemcoord:"",
+						 words:""
+						 }
+				 ],
+				 result:""
+		
+			 },
+			 methods:{
+				 btn2Click:function(){
+					
+					 var z=this;
+							//var tishi;
+							var url=$("#url").val();
+							if(url===undefined||url===null||url.trim()===""){
+								alert("请输入图片路径");
+							}else{
+								 $(".img").attr("src",url);
+								 this.$http.post("${pageContext.request.contextPath}/img/recognition/url",{url:url},{emulateJSON:true})
+								 .then(function(res){
+									 this.items=res.body.data.items;
+								 var str="";
+								 for(var i=0;i<z.items.length;i++){
+									str+= z.items[i].itemstring;
+								 }
+								 z.result=str;
+								 $(".txt").val(z.result);
+								 })
+							}
+				 }
+				 
+			 }
+		})
+
+		$("#btn").click(function(){
+		$("#fileUpdate-input").click();
+		})
+		
+
+$("#fileUpdate-input").on('change', function () {
+       var file = this.files[0];//获取文件信息
+        if (window.FileReader)
+        {
+          var reader = new FileReader(file);
+          var url =reader.readAsDataURL(file);
+            //监听文件读取结束后事件    
+            reader.onloadend = function (e) {
+                $(".img").attr("src",e.target.result);
+            };
+        }
+    	var formData = new FormData();
+		formData.append("img",file); 
+ 		$.ajax({
+			url:"${pageContext.request.contextPath}/img/recognition",
+			type:"POST",
+			data:formData,
+			processData: false, // 告诉jQuery不要去处理发送的数据
+	        contentType: false, // 告诉jQuery不要去设置Content-Type请求头
+			beforeSend:function () {
+		     		console.log("正在进行，请稍候");
+		 	},
+			success:function(msg){
+			//	alert(msg);
+				
+			}
+		}) 
+       
+	 
+});
+
+</script>
+</html>

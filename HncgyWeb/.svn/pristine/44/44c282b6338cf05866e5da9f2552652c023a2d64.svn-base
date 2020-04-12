@@ -1,0 +1,21 @@
+package com.ssm.service.admin.teacher;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.ssm.mapper.TeacherMapper;
+import com.ssm.po.Teacher;
+
+@Service
+public class TeacherServiceImpl implements TeacherService{
+	@Resource
+	private TeacherMapper teacherMapper;
+
+	@Override
+	public List<Teacher> findAll() {
+		return teacherMapper.findAll();
+	}
+}

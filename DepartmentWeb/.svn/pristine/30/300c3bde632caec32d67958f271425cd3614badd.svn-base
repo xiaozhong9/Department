@@ -1,0 +1,354 @@
+ var layedit;
+ var index;
+var x=1;
+var curCount1=20;
+layui.use('layedit', function() {
+
+	layedit= layui.layedit;
+
+			index = layedit.build('demo', {
+				tool : [  'face'
+					, 'link'
+					, 'unlink'
+					, '|'
+					,'strong' // 加粗
+				    ,'italic' // 斜体
+				    ,'underline' // 下划线
+				    ,'del' // 删除线
+				    ,'|'
+				    , 'left'
+					, 'center'
+					, 'right' ],
+				height : 75,
+			}); // 建 立编辑器
+
+			
+			var pageWidth = window.innerWidth, 
+		    pageHeight = window.innerHeight; 
+
+		if (typeof pageWidth != "number"){ 
+		    //标准模式
+		    if (document.compatMode == "CSS1Compat"){ 
+		        pageWidth = document.documentElement.clientWidth; 
+		        pageHeight = document.documentElement.clientHeight; 
+		    //怪异模式
+		    } else { 
+		        pageWidth = document.body.clientWidth; 
+		        pageHeight = document.body.clientHeight; 
+		    } 
+		} 
+		
+		console.log(pageWidth+':'+pageHeight)
+		if(pageWidth<500){
+			pageWidth=pageWidth*0.8
+		}else{
+			pageWidth=420;
+		}
+		
+			$("#i").click(function() {
+				if(!Main.comment){
+				layer.open({
+					   type:2,
+					   area:[pageWidth+'px','360px'], 
+					   shade:0.3,
+					 
+					   shadeClose: true,
+					   title: '游客验证'
+					  ,content: ['/DepartmentWeb/page/email/verification','no']
+					 	
+				
+				});     
+				return;
+				}	 
+				var text=layedit.getText(index)
+				var comment=layedit.getContent(index);
+				if(text===undefined||text===null||text.trim()===""){
+					layer.msg("请输入评论");
+					return;
+				}
+				Main.saveComment(comment);
+			
+			})
+		});
+	var vm=new Vue({
+		el:"#footer",
+		data:{
+			
+			columns:[{
+				//栏目Id
+				columnID:0,
+				//栏目标题
+				columnTitle:null,
+				//栏目描述
+				explains:null 
+			}
+			]
+		},
+		methods:{
+			getColumns:function(){
+				this.$http.post("/DepartmentWeb/column/get/column/titles",{
+				},{emulateJSON:true})
+				.then(function(res){
+					this.columns=res.body.data;
+					console.log(this.columns);
+					})
+			}
+		},
+		created:function(){
+		}
+	});
+	var vm=new Vue({
+		el:"#my_sticky",
+		data:{
+			hotArticlesObj:[
+				{}
+			],
+			columns:[{
+				//栏目Id
+				columnID:0,
+				//栏目标题
+				columnTitle:null,
+				//栏目描述
+				explains:null 
+			}
+			]
+		},
+		methods:{
+			getColumns:function(){
+				this.$http.post("/DepartmentWeb/column/get/column/titles",{
+				},{emulateJSON:true})
+				.then(function(res){
+					this.columns=res.body.data;
+					console.log(this.columns);
+				})
+			},
+			hotArticlesMethod:function(){
+				var c=localStorage.columnID;
+				this.$http.post("/DepartmentWeb/column/hot/article",{"columnId":c},{emulateJSON:true})
+				.then(function(res){
+					this.hotArticlesObj=res.body.data;
+					console.log(this.hotArticlesObj);
+				})
+			}
+		},
+		filters:{
+			sub:function(value){
+				 if(undefined!=value&&value.length>13){
+					return value.substring(0,12);
+				} 
+				return value
+			}
+		},
+		created:function(){
+			this.getColumns();
+			this.hotArticlesMethod();
+		}
+	});
+
+	var Main =new Vue ({
+					
+					el:"#box",
+					data :{
+						phone:"111",
+						email:"000",
+						aid:0,
+						columnId:0,
+						comment:false,
+						lastArticle : {
+							aid : 0,
+							articleTitle : "",
+							columnID : 0
+						},
+						nextArticle : {
+							aid : 0,
+							articleTitle : "",
+							columnID : 0
+						}
+						,
+						// 文章评论
+						olines:[
+							{
+								oid:0,
+								pubTime:"",
+								tourist:"",
+								content:""
+							}
+						],
+						pageSize:1
+						
+					},
+					methods : {
+						
+					
+						 handleReachBottom () {
+							 if(this.pageSize===-1){
+								$(".ivu-scroll-loader-text").html("已经到底了");
+								 return;
+							 }
+							 	var arr;
+							 	this.pageSize++;
+							 	this.$http.post("/DepartmentWeb/comment/find/article/olines",{
+									"article_Id":this.aid,
+									"column_Id":this.columnId,
+									"currentPage":this.pageSize
+								},{emulateJSON:true})
+								.then(function(res){
+									
+									arr=res.body.data.list;
+									
+									if(res.body.data.list.length<10){
+									
+										this.pageSize=-1;
+									}
+								})
+							
+				                return new Promise(resolve => {
+				                    setTimeout(() => {
+				                        for (let i = 0; i < arr.length; i++) {
+				                            this.olines.push(arr[i]);
+				                        }
+				                        resolve();
+				                    }, 2000);
+				                });
+				            },
+					
+							/* 获取文章上下篇 */						
+						pageTurnArticle : function() {
+							
+							this.$http
+									.post(
+											"/DepartmentWeb/article/get/page/turn",
+											{
+												"aid" : this.aid,
+												"columnID" : this.columnId
+											}, {
+												emulateJSON : true
+											})
+									.then(
+											function(res) {
+												this.lastArticle = res.body.data.lastArticle;
+												this.nextArticle = res.body.data.nextArticle;
+												
+											})
+						},
+						/* 提交评论 */	
+						
+						
+						saveComment:function(comment){ 
+							var tourist=null;
+							if(this.email!='000'&&this.email!=null&&this.email!=undefined){
+								tourist=this.email;
+							}else{
+								tourist=this.phone;
+							}
+							
+							
+							this.$http.post("/DepartmentWeb/comment/save/comment",{
+							"column_Id":this.columnId,
+							"article_Id":this.aid,
+							"comment":comment,
+							"tourist":tourist
+							},{emulateJSON:true})
+							.then(function(res){
+								var oline=res.body.data;
+								if(oline.state===0){
+									oline.pubTime=new Date();
+									this.olines.unshift(oline);
+									layedit.setContent(index,"",false);
+									layer.msg("评论成功",{icon: 6});
+								}else if(oline.state===2){
+									layer.msg("审核中");
+								}else{
+
+									layer.msg("不正当言辞",function(){});
+
+									layer.msg("不正当言辞",function(){
+										//关闭后的操作
+									});
+
+								}
+								x++;
+								console.log("x="+x)
+								if(x==5){
+								$("#i").attr("disabled","disabled")
+								layer.msg("休息一下在评论",{icon:6});
+								$("#i").css("background","#ddd")
+								InterValObj1 = window.setInterval(SetRemainTime1, 1000);
+								console.log("=======操你妈");
+								$("#i").css("cursor","not-allowed");
+								x=0;
+
+								}
+							})
+						},
+						/* 评论 */
+						findOlinesByart:function(){
+							this.$http.post("/DepartmentWeb/comment/find/article/olines",{
+								"article_Id":this.aid,
+								"column_Id":this.columnId,
+								"currentPage":this.pageSize
+							},{emulateJSON:true})
+							.then(function(res){
+								this.olines=res.body.data.list;
+							})
+						}
+
+					},
+					created : function() {
+						
+						var obj=localStorage.obj;
+						
+						var em=localStorage.email;
+						
+						if(obj=='true'){
+							
+							this.comment=true;
+							this.email=em;
+							
+						}
+						
+						
+						var aid = localStorage.aid;
+						var columnId = localStorage.columnID;
+						this.aid=aid;
+						this.columnId=columnId;
+						this.findOlinesByart();
+						this.pageTurnArticle();
+						
+					},
+					filters: {
+					      formatDate: function (value) {
+					        let date = new Date(value);
+					        let y = date.getFullYear();
+					        let MM = date.getMonth() + 1;
+					        MM = MM < 10 ? ('0' + MM) : MM;
+					        let d = date.getDate();
+					        d = d < 10 ? ('0' + d) : d;
+					        let h = date.getHours();
+					        h = h < 10 ? ('0' + h) : h;
+					        let m = date.getMinutes();
+					        m = m < 10 ? ('0' + m) : m;
+					        let s = date.getSeconds();
+					        s = s < 10 ? ('0' + s) : s;
+					        return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s;
+					      }
+					    }
+				})
+		
+		var Component = Vue.extend(Main)
+		// new Component().$mount('#box')
+		
+	function SetRemainTime1() {
+		if (curCount1 == 0) {
+			window.clearInterval(InterValObj1);
+			$("#i").removeAttr("disabled");
+			$("#i").html("评论");
+			$("#i").css("background","#5599FF")
+			$("#i").css("cursor","pointer");
+			curCount1=20;
+		}
+		else {
+			curCount1--;
+			$("#i").html( curCount1 + "秒");
+		}
+	}

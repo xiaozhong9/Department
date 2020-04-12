@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.FriendlyLinkMapper">
+	<!-- 查找指定友情链接 -->
+	<select id="findFriendlyLinkById" parameterType="int" resultType="friendlylink">
+		select * from friendlylink where id =#{id}
+	</select>
+	
+	<!-- 查找所有友情链接 -->
+	<select id="findAll" resultType="friendlylink">
+		select * from friendlylink
+	</select>
+	<!-- 插入友情链接 -->
+	<insert id="saveFriendLink" parameterType="friendlylink">
+		insert friendlylink values(0,#{remarks},#{imgUrl},#{httpUrl})
+	</insert>
+	
+	<!-- 删除指定链接 -->
+	<delete id="deleteLinkById">
+		delete from friendlylink where id =#{id}
+	</delete>
+	
+	<!-- 批量删除友情链接 -->
+	
+	<delete id="batchDeletion">
+		delete from friendlylink where id in 
+		<foreach collection="arr" item="item" separator="," open="(" close=")">
+				#{item}
+		</foreach>
+	</delete>
+	
+	<!-- 修改友情链接 -->
+	<update id="FriendlyLink" parameterType="friendlylink">
+		update friendlylink set remarks=#{remarks},imgUrl=#{imgUrl},httpUrl=#{httpUrl}
+		where id=#{id}
+	</update>
+</mapper>

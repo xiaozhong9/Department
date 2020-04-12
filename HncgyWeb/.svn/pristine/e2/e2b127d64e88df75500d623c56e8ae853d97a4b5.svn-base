@@ -1,0 +1,30 @@
+package com.ssm.po;
+
+public class FriendlyLink {
+	private int id;
+	private String remarks;
+	private String imgUrl;
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getRemarks() {
+		return remarks;
+	}
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+	public String getImg_Url() {
+		return imgUrl;
+	}
+	public void setImg_Url(String imgUrl) {
+		this.imgUrl = imgUrl;
+	}
+	@Override
+	public String toString() {
+		return "FriendlyLink [id=" + id + ", remarks=" + remarks + ", Img_Url=" + imgUrl + "]";
+	}
+	
+}

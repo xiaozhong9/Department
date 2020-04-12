@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.TodayMapper">
+
+	<!-- 获取今日关注 -->
+	<select id="findAll" resultType="map">
+		SELECT distinct
+		a.Aid,a.title,a.author,a.viewCount,a.pubTime,
+		(select count(*) from today t where t.aid=hot.aid) as isToday
+		FROM `hotarticle` hot
+		left join article a
+		on hot.aid=a.Aid
+	</select>
+	<!-- 插入今日关注 -->
+	<insert id="saveToday" parameterType="today">
+		insert today values(#{id},#{aid},#{title});
+	</insert>
+	
+	<delete id="delToday" parameterType="int">
+		delete from today where aid=#{aid}
+	</delete>
+	
+</mapper>

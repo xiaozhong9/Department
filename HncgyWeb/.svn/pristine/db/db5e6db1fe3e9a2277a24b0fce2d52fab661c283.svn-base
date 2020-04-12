@@ -1,0 +1,23 @@
+package com.ssm.service.admin.oline;
+
+import java.util.List;
+import java.util.Map;
+
+import com.github.pagehelper.PageInfo;
+
+public interface CommentService {
+	/**
+	 * 获取需要审核的评论
+	 * @param currentPage 第几页
+	 * @param pageSize	一页多少行
+	 * @return
+	 */
+	public PageInfo<List<Map<String,Object>>> findOlineByState(int currentPage, int pageSize);
+	
+	/**
+	 * 审核
+	 * @param id
+	 * @return
+	 */
+	public int updateStateById(int id);
+}

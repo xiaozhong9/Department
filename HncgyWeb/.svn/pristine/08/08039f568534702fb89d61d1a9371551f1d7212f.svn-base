@@ -1,0 +1,28 @@
+package com.ssm.service.admin.admin;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ssm.mapper.AdminMapper;
+import com.ssm.po.Admin;
+
+@Service
+public class IAdminServiceImpl implements IAdminService {
+
+	@Autowired
+	private AdminMapper adminMapper;
+	@Override
+	public Admin login(Admin admin) throws Exception {
+		
+		return adminMapper.login(admin);
+	}
+	@Override
+	public Admin selectByEmail(String email) {
+		return adminMapper.selectByEmail(email);
+	}
+	@Override
+	public Admin selectByPhone(String phone) {
+		return adminMapper.selectByPhone(phone);
+	}
+
+}

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.ColumnMapper">
+    
+	<select id="findArticleByPage" parameterType="int" resultType="article">
+		select a.title,a.Aid,a.pubTime
+		from `columns` c
+		inner join
+		article_columns ac
+		on
+		c.columnID=ac.columnID
+		inner join `article` a
+		on
+		ac.Aid=a.Aid
+		where c.columnID=#{columnID} and a.state=1
+		order by pubTime desc
+	</select>
+
+	<resultMap type="ColumnArticleTitle" id="ColumnArticleTitle">
+		<id column="columnID" property="columnID" />
+		<collection property="article" ofType="com.ssm.po.Article"
+			javaType="list">
+			<result column="Aid" property="Aid" />
+			<result column="pubTime" property="pubTime" />
+			<result column="title" property="title" />
+		</collection>
+		<collection property="column" javaType="Column">
+			<id column="columnID" property="columnID" />
+			<result column="columnTitle" property="columnTitle" />
+			<result column="explains" property="explains" />
+		</collection>
+
+	</resultMap>
+
+	<!--通过文章ID 栏目ID 获取栏目标题 -->
+	<select id="getColumnTitle" resultType="string" parameterType="int">
+		select c.columnTitle from article_columns ac join article a on
+		ac.Aid=a.Aid
+		join `columns` c on ac.columnID=c.columnID
+		where a.Aid=#{0}
+		and c.columnID =#{1}
+	</select>
+
+
+
+	<!-- 获取所有首页 栏目ID -->
+	<select id="index" resultType="int">
+		select columnID from `index` where
+		state=1 order by columnID ASC	<!-- 按首页排序 -->
+	</select>
+
+
+	<select id="getColumnArticleTitle" resultMap="ColumnArticleTitle"
+		parameterType="int">
+		select a.Aid,a.pubTime,a.title,c.*
+		from `columns` c
+		inner join
+		article_columns ac
+		on
+		c.columnID=ac.columnID
+		inner join `article` a
+		on
+		ac.Aid=a.Aid
+		where c.columnID in
+		<foreach collection="list" item="arr" separator="," open="("
+			close=")">
+			#{arr}
+		</foreach>
+		 and a.state=1 
+		order by c.columnID ASC,a.pubTime desc 
+
+	</select>
+
+	<select id="getColumns" resultType="column">
+		select * from `columns`;
+	</select>
+
+	<!-- 获取所有栏目标题 -->
+	<select id="getColumnTitles" resultType="string">
+		select columnTitle from
+		`columns`;
+	</select>
+	<!--根据栏目ID 获取栏目标题 -->
+	<select id="getColumnTitleById" resultType="string"
+		parameterType="int">
+		select columnTitle from
+		`columns` where
+		columnID=#{columnID}
+	</select>
+	<!-- 根据栏目获取指定文章 -->
+	<select id="getArticles" parameterType="int" resultType="Article">
+		select a.title,a.Aid,a.pubTime,a.state	
+		from `columns` c
+		inner join
+		article_columns ac
+		on
+		c.columnID=ac.columnID
+		inner join `article` a
+		on
+		ac.Aid=a.Aid
+		where c.columnID=#{columnID} 
+		order by pubTime desc	<!-- 降序 -->
+	</select>
+
+
+	<insert id="saveColumn" parameterType="column">
+		insert into `columns`
+		values(#{columnID},#{columnTitle},#{explains})
+	</insert>
+
+	<delete id="removeColumn" parameterType="int">
+
+	</delete>
+
+
+	<select id="countSize" resultType="int" parameterType="int">
+		select
+		count(*)
+		from `columns` c
+		left join article a
+		on c.columnID=a.Aid
+		where
+		c.columnID=#{columnID}
+	</select>
+
+	<!-- 文章分页 -->
+	<select id="listArticlePage" parameterType="int" resultType="article">
+	   SELECT a.Aid,a.title,a.author,a.pubTime,a.state 
+	   from article a join article_columns ac on a.Aid =ac.Aid 
+	   where ac.columnID=#{columnID} and a.state=1 order by a.pubTime desc
+	    
+	</select>
+	
+	<!-- 批量删除 栏目 下的 所选中文章 -->
+	<delete id="removeArticles" >
+	
+	DELETE from article_columns where columnID = #{columnID} and Aid in  <foreach collection="Aids" item="arr" separator="," open="("
+			close=")">
+			#{arr}
+		</foreach>
+	
+	</delete>
+	<!-- 删除 栏目 下的 所选中文章 -->
+	<delete id="deleteArticle" >
+	
+	DELETE from article_columns where columnID = #{columnID} and Aid =#{aid}
+		
+	
+	</delete>
+</mapper>

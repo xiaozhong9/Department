@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.OlineMapper">
+	<!-- 获取需要审核的评论 -->
+	 <select id="findOlineByState" parameterType="int" resultType="map">
+		select
+		a.title,c.columnTitle,o.content,ao.*,o.state,o.tourist,o.pubTime
+		from article_oline ao
+		left join `columns` c
+		on ao.column_id=c.columnID
+		left join `article` a
+		on ao.article_id=a.Aid
+		left join oline o
+		on ao.oline_id=o.oid
+		where
+		o.state=#{state}
+		order by o.pubTime desc
+	</select> 
+
+	
+	<!-- 审核通过-->
+	<update id="updateStateById" parameterType="int">
+		update oline set state=0
+		where oid=#{id}
+	</update>
+	
+	<!-- 审核不通过-->
+	<update id="notPass" parameterType="int">
+		update oline set state=3
+		where oid=#{id}
+	</update>
+	
+	<!-- 插入评论 -->
+	<insert id="insertOline" useGeneratedKeys="true" keyProperty="oid"
+		parameterType="oline">
+
+		insert oline value(0,#{tourist},#{content},null,#{state})
+		<!-- <selectKey keyProperty="oid" order="AFTER" resultType="int"> select 
+			LAST_INSERT_ID() </selectKey> -->
+	</insert>
+	<!-- 获取指定栏目下文章的所有评论 -->
+	<select id="findOlineByArt" parameterType="int" resultType="oline">
+		select o.* from
+		article_oline ao inner join
+		article_columns ac
+		on
+		ao.article_id=ac.Aid
+		and ao.column_id=ac.columnID and ac.columnID=#{1}
+		and ao.article_id=#{0}
+		left join oline o
+		on ao.oline_id=o.oid
+		where
+		o.state=0
+		order by o.pubTime desc
+	</select>
+	<!-- 批量删除 -->
+	<delete id="batchDel">
+		delete from oline where oid in
+		<foreach collection="arr" item="item" separator="," open="(" close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<!-- 删除指定评论 -->
+	<delete id="delById" parameterType="int">
+		delete from oline where oid =#{id}
+	</delete>
+
+	
+</mapper>

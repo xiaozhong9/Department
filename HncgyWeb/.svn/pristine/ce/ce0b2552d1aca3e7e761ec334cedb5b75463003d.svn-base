@@ -1,0 +1,40 @@
+package com.ssm.service.admin.activity;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.ssm.mapper.ActivityMapper;
+import com.ssm.po.Activity;
+@Service
+public class ActivityServiceImpl implements ActivityService {
+	@Autowired
+	private ActivityMapper activityMapper;
+	@Override
+	public PageInfo<Activity> findActivityByPage(int currentPage, int pageSize) {
+		PageHelper.startPage(currentPage,pageSize);
+		List<Activity> findAll = activityMapper.findAll();
+		return new PageInfo<Activity>(findAll);
+	}
+	@Override
+	public int delActivity(int id) {
+		return activityMapper.delActivity(id);
+	}
+	@Override
+	public int updateActivity(Activity activity) {
+		return activityMapper.updateActivity(activity);
+	}
+	@Override
+	public int saveActivity(Activity activity) {
+		return activityMapper.saveActivity(activity);
+	}
+	@Override
+	public Activity findActivityById(int id) {
+		return activityMapper.findActivityById(id);
+	}
+	
+
+}

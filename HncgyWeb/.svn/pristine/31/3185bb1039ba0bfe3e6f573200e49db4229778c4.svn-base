@@ -1,0 +1,29 @@
+package com.ssm.service.admin.oline;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.ssm.mapper.OlineMapper;
+import com.ssm.po.Article;
+@Service
+public class CommentServiceImpl implements CommentService {
+	@Autowired
+	private OlineMapper mapper;
+	@Override
+	public PageInfo<List<Map<String,Object>>> findOlineByState(int currentPage, int pageSize) {
+		PageHelper.startPage(currentPage, pageSize);
+		List<HashMap<String, Object>> findOlineByState = mapper.findOlineByState();
+		 return  new PageInfo(findOlineByState);
+	}
+	@Override
+	public int updateStateById(int id) {
+		return mapper.updateStateById(id);
+	}
+
+}

@@ -1,0 +1,7 @@
+eclipse.preferences.version=1
+encoding//src/main/java/com/ssm/controller/admin/PageCtroller.java=gbk
+encoding//src/main/java/com/ssm/controller/admin/VerificationController.java=gbk
+encoding//src/main/java/com/ssm/service/admin/verification/LoginServiceImpl.java=UTF-8
+encoding//src/main/java/com/ssm/test/Test.java=utf8
+encoding//src/main/resources/jdbc.properties=UTF-8
+encoding/<project>=gbk

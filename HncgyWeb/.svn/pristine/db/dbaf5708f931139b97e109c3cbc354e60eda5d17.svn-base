@@ -1,0 +1,90 @@
+package com.ssm.service.api.column;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.ssm.common.ApiResponseObject;
+import com.ssm.common.ApiServiceException;
+import com.ssm.mapper.ColumnMapper;
+import com.ssm.po.Article;
+import com.ssm.po.ColumnArticleTitle;
+import com.ssm.po.Column;
+
+@Service
+public class ColumnServiceImpl implements ColumnService {
+
+	@Resource
+	ColumnMapper columnMapper;
+
+	@Override
+	public List<Article> getArticles(int columnID) throws ApiServiceException {
+		return columnMapper.getArticles(columnID);
+	}
+
+	@Override
+	public int countSize(int columnID) throws ApiServiceException {
+		return columnMapper.countSize(columnID);
+	}
+
+	@Override
+	public int saveColumn(Column column) throws ApiServiceException {
+		return columnMapper.saveColumn(column);
+	}
+
+	@Override
+	public int updateColumn(Column column) throws ApiServiceException {
+		return columnMapper.updateColumn(column);
+	}
+
+	@Override
+	public int removeColumn(int columnID) throws ApiServiceException {
+		return columnMapper.removeColumn(columnID);
+	}
+
+	@Override
+	public List<Column> getColumnTitles() throws ApiServiceException {
+		return columnMapper.getColumnTitles();
+	}
+
+	@Override
+	public List<Column> getColumns() throws ApiServiceException {
+
+		return columnMapper.getColumns();
+	}
+
+	@Override
+	public List<ColumnArticleTitle> getColumnArticleTitle(List<Integer> arr) throws ApiServiceException {
+		
+		return columnMapper.getColumnArticleTitle(arr);
+
+	}
+
+	@Override
+	public List<Integer> index() throws ApiServiceException {
+		return columnMapper.index();
+	}
+
+	@Override
+	public String getColumnTitle(int Aid, int columnID) {
+	
+		return  columnMapper.getColumnTitle(Aid, columnID);
+	}
+
+	@Override
+	public String getColumnTitleById(int columnID) {
+		return columnMapper.getColumnTitleById(columnID);
+	}
+
+	@Override
+	public PageInfo<Article> findArticleByPage(int columnID,int currentPage, int pageSize) {
+		PageHelper.startPage(currentPage, pageSize);
+		List<Article> list = columnMapper.findArticleByPage(columnID);
+		return new PageInfo<Article>(list);
+	}
+
+}

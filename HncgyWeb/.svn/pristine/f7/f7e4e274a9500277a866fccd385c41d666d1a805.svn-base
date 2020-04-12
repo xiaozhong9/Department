@@ -1,0 +1,85 @@
+package com.ssm.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.ssm.po.Activity;
+
+public interface ActivityMapper {
+	/**
+	 * 获取所有活动公告
+	 * 
+	 * @return
+	 */
+	public List<Activity> findAll();
+
+	/**
+	 * 删除活动公告
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public int delActivity(int id);
+
+	/**
+	 * 修改活动公告
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public int updateActivity(Activity activity);
+
+	/**
+	 * 添加活动公告
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public int saveActivity(Activity activity);
+
+	/**
+	 * 查找指定公告
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public Activity findActivityById(int id);
+
+	/**
+	 * 查找5条活动公告在页面显示
+	 * 
+	 * @return
+	 */
+	public List<Activity> apiFindActivity();
+
+	/**
+	 * 批量删除
+	 * 
+	 * @param ids
+	 * @return
+	 */
+	public int batchDel(@Param(value = "ids") int[] ids);
+
+	/**
+	 * 下一篇文章
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public Activity nextActivity(int id);
+
+	/**
+	 * 上一篇文章
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public Activity lastActivity(int id);
+	
+	/**
+	 * 最新活动公告
+	 * @return
+	 */
+	public List<Activity> newestActivity();
+}

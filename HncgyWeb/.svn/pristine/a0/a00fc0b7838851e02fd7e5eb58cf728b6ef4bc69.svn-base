@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.ActivityMapper">
+	<!-- 获取所有活动公告 -->
+	<select id="findAll" resultType="activity">
+		select id,title,cover,editor,pubTime, viewCount,state from activity
+	</select>
+	<!-- 删除活动公告 -->
+	<delete id="delActivity" parameterType="int">
+		delete from activity
+		where id =#{id}
+	</delete>
+	<!-- 修改活动公告 -->
+	<update id="updateActivity" parameterType="activity">
+		update activity set
+		title=#{title},
+		cover=#{cover},
+		content=#{content},
+		editor=#{editor}
+		where
+		id=#{id}
+	</update>
+	<!-- 添加活动公告 -->
+	<insert id="saveActivity" parameterType="activity">
+		insert activity
+		values(0,#{title},#{cover},#{content},null,#{editor},0,0)
+	</insert>
+	
+	<select id="findActivityById" parameterType="id" resultType="activity">
+		select * from activity where id=#{id}
+	</select>
+</mapper>

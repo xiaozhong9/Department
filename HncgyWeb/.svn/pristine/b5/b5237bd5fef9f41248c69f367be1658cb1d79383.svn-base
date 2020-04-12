@@ -1,0 +1,45 @@
+package com.ssm.controller.admin;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.github.pagehelper.PageInfo;
+import com.ssm.po.Activity;
+import com.ssm.service.admin.activity.ActivityService;
+
+@Controller
+@RequestMapping("activity")
+public class ActivityController {
+	@Autowired
+	private ActivityService service;
+	@RequestMapping(value="activitys/page",method=RequestMethod.POST)
+	public PageInfo<Activity> findActivityByPage(int currentPage,int pageSize){
+		PageInfo<Activity> findActivityByPage = service.findActivityByPage(currentPage,pageSize);
+		return findActivityByPage;
+	}
+	
+	@RequestMapping(value="del",method=RequestMethod.POST)
+	@ResponseBody
+	public String delActivity(int id){
+		int delActivity = service.delActivity(id);
+		if(delActivity>0){
+			return "success";
+		}
+		return "error";
+	}
+	@RequestMapping(value="save",method=RequestMethod.POST)
+	@ResponseBody
+	public String saveActivity(Activity activity){
+		if(activity==null){
+			return null;
+		}
+		int saveActivity = service.saveActivity(activity);
+		if(saveActivity>0){
+			return "success";
+		}
+		return "error";
+	}
+}

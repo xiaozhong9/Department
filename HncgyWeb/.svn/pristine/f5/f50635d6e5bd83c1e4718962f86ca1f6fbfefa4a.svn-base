@@ -1,0 +1,108 @@
+package com.ssm.controller.admin;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.github.pagehelper.PageInfo;
+import com.ssm.po.Activity;
+import com.ssm.service.admin.activity.ActivityService;
+
+@Controller
+@RequestMapping("activity")
+public class ActivityController {
+	@Autowired
+	private ActivityService service;
+	
+	
+	@Value("${pic.activity}")
+	private String tUrl;
+	@RequestMapping(value = "/upload", method = RequestMethod.POST)
+	@ResponseBody
+	public String uploadTeacherPic(@RequestParam(value = "file") MultipartFile file) throws IOException{
+		if (file != null) {
+			// 原名字
+			String name = file.getOriginalFilename();
+			// 上传文件位置
+			String uploadPath = this.tUrl;
+			// 扩展名
+			String type = name.substring(name.lastIndexOf("."));
+			// 随机号
+			String uuid = UUID.randomUUID().toString();
+			// 路径
+			String path = uploadPath + uuid + type;
+			File f = new File(path);
+			// 新名字
+			String newName = uuid + type;
+			file.transferTo(f);
+			return newName;
+		}
+		return "error";
+	}
+	
+	@RequestMapping(value="activitys/page",method=RequestMethod.POST)
+	@ResponseBody
+	public PageInfo<Activity> findActivityByPage(int currentPage,int pageSize){
+		PageInfo<Activity> findActivityByPage = service.findActivityByPage(currentPage,pageSize);
+		
+	
+		return findActivityByPage;
+	}
+
+	
+	@RequestMapping(value="del",method=RequestMethod.POST)
+	@ResponseBody
+	public String delActivity(int id){
+		int delActivity = service.delActivity(id);
+		if(delActivity>0){
+			return "success";
+		}
+		return "error";
+	}
+	@RequestMapping(value="save",method=RequestMethod.POST)
+	@ResponseBody
+	public String saveActivity(@RequestBody Activity activity){
+		System.err.println("====================================");
+		System.out.println(activity);
+		System.err.println("====================================");
+		if(activity==null){
+			return null;
+		}
+		int saveActivity = service.saveActivity(activity);
+		if(saveActivity>0){
+			return "success";
+		}
+		return "error";
+	}
+	@RequestMapping(value="updateActivity",method=RequestMethod.POST)
+	@ResponseBody
+	public String updateActivity(@RequestBody Activity activity){
+		System.err.println("============1========================");
+		System.out.println(activity);
+		System.err.println("=============1=======================");
+		if(activity==null){
+			return null;
+		}
+		int saveActivity = service.updateActivity(activity);
+		if(saveActivity>0){
+			return "success";
+		}
+		return "error";
+	}
+	@RequestMapping(value="findby/id",method=RequestMethod.POST)
+	@ResponseBody
+	public Activity findActivityById(int id){
+		return service.findActivityById(id);
+	}
+	
+}

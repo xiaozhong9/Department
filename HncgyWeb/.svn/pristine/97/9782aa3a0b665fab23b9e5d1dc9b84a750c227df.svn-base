@@ -1,0 +1,24 @@
+package com.ssm.service.api.teacher;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ssm.common.ApiServiceException;
+import com.ssm.mapper.TeacherMapper;
+import com.ssm.po.Teacher;
+
+@Service
+public class TeacherServiceImplApi implements TeacherServiceApi {
+
+	@Autowired
+	private TeacherMapper teacherMapper;
+	
+	@Override
+	public List<Teacher> getTeachers() throws ApiServiceException {
+		// TODO Auto-generated method stub
+		return teacherMapper.findAll();
+	}
+
+}

@@ -1,0 +1,9 @@
+package com.ssm.mapper;
+
+import java.util.List;
+
+import com.ssm.po.Activity;
+
+public interface ActivityMapper {
+	public List<Activity> findAll();
+}

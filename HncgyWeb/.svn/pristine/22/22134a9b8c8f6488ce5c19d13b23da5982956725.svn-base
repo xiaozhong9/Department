@@ -1,0 +1,50 @@
+package com.ssm.controller.api;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ssm.common.ApiResponseEnum;
+import com.ssm.common.ApiResponseObject;
+import com.ssm.po.MailModel;
+import com.ssm.service.admin.verification.LoginService;
+
+@RestController
+@RequestMapping("api/tourist")
+public class TouristApiController extends AbstractApiController{
+	@Autowired
+	private LoginService loginService;
+	@RequestMapping(value="email/ver",method=RequestMethod.POST)
+	public ApiResponseObject touristEmail(@RequestBody String email,HttpServletRequest request){
+		if(email==null||"".equals(email.trim())){
+			return responseJSON(ApiResponseEnum.ERROR_DATA_EMPTY.getCode(), ApiResponseEnum.ERROR_DATA_EMPTY.getName(), null);
+		}
+		MailModel mm = new MailModel(email, "” œ‰—È÷§");
+		String key="";
+		try {
+		key = loginService.selectUserByEmail(email, mm, request);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return responseJSON(ApiResponseEnum.SUCCESS.getCode(), ApiResponseEnum.SUCCESS.getName(), key);
+	}
+	@RequestMapping(value="phone/ver",method=RequestMethod.POST)
+	public ApiResponseObject touristPhone(@RequestBody String phone,HttpServletRequest request){
+		phone=phone.replace("\"", "");
+		if(phone==null||"".equals(phone.trim())){
+			return responseJSON(ApiResponseEnum.ERROR_DATA_EMPTY.getCode(), ApiResponseEnum.ERROR_DATA_EMPTY.getName(), null);
+		}
+		String key="";
+		
+		try {
+			key = loginService.sendVerificationCode(phone, request);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return responseJSON(ApiResponseEnum.SUCCESS.getCode(), ApiResponseEnum.SUCCESS.getName(), key);
+	}
+}

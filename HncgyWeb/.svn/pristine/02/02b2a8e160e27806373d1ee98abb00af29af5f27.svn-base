@@ -1,0 +1,13 @@
+package com.ssm.mapper;
+
+import java.util.List;
+import java.util.Map;
+
+public interface TodayMapper {
+	/**
+	 * 获取所有热门文章
+	 * @return
+	 */
+	public List<Map<String,Object>> findAll();
+
+}

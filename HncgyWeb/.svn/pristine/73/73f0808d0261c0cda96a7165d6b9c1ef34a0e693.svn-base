@@ -1,0 +1,22 @@
+package com.ssm.service.api.today;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ssm.mapper.TodayMapper;
+import com.ssm.po.Article;
+
+@Service
+public class TodayApiServiceImpl implements TodayApiService {
+	@Autowired
+	private TodayMapper mapper;
+	@Override
+	public Article getArticle(int id) {
+		return mapper.getArticle(id);
+	}
+	@Override
+	public int isExistence(int aid) {
+		return mapper.isExistence(aid);
+	}
+
+}

@@ -1,0 +1,154 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
+	<title>图片上传</title>
+	<style type="text/css">
+.content{
+	width:60%;
+	margin: 0 auto;
+	border: 1px solid #ddd;
+}
+
+#btn ,.mybtn{
+  width:100px;
+  height:30px;
+  display:inline-block;
+  background-color:rgb(91,183,91);
+  border:1px solid rgb(91,183,91);
+  border-radius:3px;
+  color:white;
+  font-size:14px;
+  font-family:微软雅黑;
+  cursor:pointer;
+  text-align:center;
+  vertical-align: center;
+  box-shadow:0px 0px 1px 1px rgb(91,160,91);
+}
+.mybtn:hover{
+  background-color:rgb(91,160,91);
+  border-color:rgb(91,160,91);
+  color:white;
+  text-decoration:none;
+}
+.myinp{
+  width:100px;
+  height:30px;
+  display:inline-block;
+  border:1px solid rgb(209,232,250);
+  border-radius:2px;
+}
+#div4bm{
+  padding-top:15px;
+  margin-right:15px;
+  }
+  #mybutton{
+  margin-left:100px;
+}
+#myimg{
+  width:164px;
+  height:164px;
+}
+	</style>
+
+	<script type="text/javascript">
+			//定义id选择器
+function Id(id){
+return document.getElementById(id);
+}
+function changeToop(){
+  var file = Id("file");
+  if(file.value==''){
+    //设置默认图片
+  Id("myimg").src='http://sandbox.runjs.cn/uploads/rs/72/huvtowwn/zanwu.png';
+  }else{
+    preImg("file","myimg");
+ 	Id("myimg").style.display="block";
+  }
+}
+//获取input[file]图片的url Important
+function getFileUrl(fileId) {
+  var url;
+  var file = Id(fileId);
+  var agent = navigator.userAgent;
+  if (agent.indexOf("MSIE")>=1) {
+  url = file.value;
+  } else if(agent.indexOf("Firefox")>0) {
+  url = window.URL.createObjectURL(file.files.item(0));
+  } else if(agent.indexOf("Chrome")>0) {
+  url = window.URL.createObjectURL(file.files.item(0));
+  }
+  return url;
+}
+//读取图片后预览
+function preImg(fileId,imgId) {
+var imgPre =Id(imgId);
+imgPre.src = getFileUrl(fileId);
+}
+
+function isEmpty(obj){
+	if(obj==null||obj==""||obj==undefined){
+		return true;
+	}
+	return false;
+}
+
+/* 图片上传 */
+function upload(){
+	var formData = new FormData();
+    formData.append("file", $("#file")[0].files[0]);
+    var file=formData.get("file");
+    if(file === 'undefined'||file==null){
+    	alert("请选择图片");
+    	return;
+    }
+    formData.append("catagory",1);
+    $.ajax({
+         type:'POST',
+         url:"${pageContext.request.contextPath}/img/upload",
+         data:formData,
+         contentType:false,
+         processData:false,
+ 		 beforeSend:function () {
+     		console.log("正在进行，请稍候");
+ 			},
+         success:function(res){
+			alert("上传成功");
+			parent.location.reload();
+    	 },
+    	error:function(){
+    		console.log("图片添加异常");
+    	}
+    	  });
+}
+</script>
+</head>
+<body>
+<fieldset class="content" style="margin-top:100px;height:200px;">
+  <legend style="font-size: 20px">单图上传</legend>
+  <div id="div4bm" style="float:left;">
+  <!--input[button] 触发 file click事件-->
+ <fieldset>
+    <h3>只能上传单张10M以下的 PNG、JPG、GIF 格式的图片</h3>
+	<form action="${pageContext.request.contextPath}/upload" method="POST" id="pictureForm" enctype="multipart/form-data">
+
+  <input type="button" value="选择文件" id="mybutton" class="mybtn" onclick="Id('file').click();" />
+	  <input type="file" name="file" accept="image/png,image/jpg,image/jpeg,image/gif" id="file" onchange="changeToop();" style="display:none;" />
+	  <input type="button" id="btn" value='提交' onClick="upload()">
+	</form>
+	</fieldset>
+  </div>
+  <!--图片展示区域-->
+
+    <!--设置默认图片-->
+
+<div style="float: right">
+    <img id="myimg" src="" style="display: none" />
+</div>
+</fieldset>
+</body>
+
+</html>

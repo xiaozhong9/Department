@@ -1,0 +1,12 @@
+package com.ssm.mapper;
+
+import com.ssm.po.Article_Oline;
+
+public interface Article_OlineMapper {
+	/**
+	 * 中间表插入数据
+	 * @param ao
+	 * @return
+	 */
+	public int insertArtOli(Article_Oline ao);
+}

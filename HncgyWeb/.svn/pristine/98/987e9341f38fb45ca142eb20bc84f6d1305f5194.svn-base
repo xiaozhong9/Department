@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.ArticleMapper">
+	<select id="getColumns" parameterType="int" resultType="column">
+		SELECT *
+		from `columns` WHERE columnID in
+		(select columnID from
+		`article_columns` where Aid=${Aid})
+
+	</select>
+
+	<!-- 通过ID获取文章 -->
+	<select id="getArticle" parameterType="int" resultType="Article">
+		select *
+		from article where Aid =#{Aid}
+	</select>
+	<!-- 修改文章 -->
+	<update id="updateArticle" parameterType="Article">
+		update article
+		set
+		title=#{title},
+		Subtitle=#{Subtitle},
+		content=#{content},
+		viewCount=#{viewCount},
+		editor=#{editor},
+		state=#{state},
+		comment=#{comment}
+		where Aid=#{Aid}
+		
+
+	</update>
+	<!-- 发布文章 -->
+	<insert id="saveArticle" parameterType="Article">
+		<selectKey keyProperty="Aid" order="AFTER" resultType="int">
+		select LAST_INSERT_ID()
+		</selectKey>
+		insert article
+		values(0,#{title},#{Subtitle},#{author},null,#{content},0,#{editor},#{state},#{comment});
+	</insert>
+	<!-- 删除文章 -->
+	<delete id="removeArticle" parameterType="int">
+		delete from article
+		where Aid=#{Aid}
+	</delete>
+	<!-- 获取所有文章 -->
+	<select id="listArticle" resultType="article">
+		select * from article where
+		state =1
+	</select>
+	<!-- 获取所有文章 用于分页 -->
+	<select id="listArticlePage" resultType="article">
+		SELECT
+		Aid,
+		title,
+		Subtitle,
+		author,
+		pubTime,
+		viewCount,
+		editor,
+		state,
+		`comment`
+		from article where state=1
+		order by pubTime desc
+	</select>
+	<!-- 获取所有草稿文章 用于分页 -->
+	<select id="listDraftsPage" resultType="article">
+		SELECT
+		Aid,
+		title,
+		Subtitle,
+		author,
+		pubTime,
+		viewCount,
+		editor,
+		state,
+		`comment`
+		from article where state=0
+		order by pubTime desc
+	</select>
+	<!-- 获取文章数量 -->
+	<select id="countSize" resultType="int">
+		select count(*) from article
+	</select>
+
+
+	<!-- 批量删除垃圾箱里面的文章 -->
+	<delete id="removeArticles">
+		delete from article  WHERE Aid in
+		<foreach collection="Aids" item="arr" separator="," open="("
+			close=")">
+			#{arr} 
+		</foreach>
+
+	</delete>
+	<!-- 批量删除文章至垃圾箱 -->
+	<update id="recycling" parameterType="int[]">
+		update article set state =-1  WHERE Aid in
+		<foreach collection="Aids" item="arr" separator="," open="("
+			close=")">
+			#{arr} 
+		</foreach>
+
+	</update>
+	<!-- 回收站 -->
+	<select id="recovery" resultType="article">
+		SELECT
+		Aid,
+		title,
+		Subtitle,
+		author,
+		pubTime,
+		viewCount,
+		editor,
+		state,
+		`comment`
+		FROM `article` where state =-1;
+	</select>
+
+	<!-- 文章还原 -->
+	<update id="reductionArticle" parameterType="int">
+		UPDATE article set state=1 where Aid=#{Aid}
+	</update>
+	<!-- 文章下架 -->
+	<update id="rejectArticle" parameterType="int">
+		UPDATE article set state=0 where Aid=#{Aid}
+	</update>
+	<!-- 文章删除 状态设置为-1 -->
+	<update id="deleteArticle" parameterType="int">
+		UPDATE article set state=-1 where Aid=#{Aid}
+	</update>
+	
+	<select id="getColumnsByAid" parameterType="int" resultType="column">
+	select ac.columnID,ac.columnTitle from article a join article_columns ac on a.Aid = ac.Aid where a.Aid=#{Aid}
+	</select>
+	
+	<update id="updateViewCount" parameterType="int">
+		update `article` set viewCount=viewCount+1 where aid=#{Aid};
+	</update>
+	
+	<select id="searchArticle" resultType="article">
+		SELECT
+		Aid,
+		title,
+		Subtitle,
+		author,
+		pubTime,
+		viewCount,
+		editor,
+		state,
+		`comment` 
+		from article where state=1
+		and pubTime between #{0} and #{1} 
+		<if test="#{2}!=null">
+			and (`title` like "%"#{2}"%" or `author` like "%"#{2}"%")
+		</if>
+		order by pubTime desc
+	
+		
+	</select>
+	
+	<!-- 上一篇 -->
+	 <select id="getLastArticle" resultType="articleColumns">
+		select a.aid,a.title as articleTitle,ac.columnID 
+		from article a join article_columns ac on a.Aid = ac.Aid 
+		where ac.columnID=#{1} and a.state =1 and a.Aid &lt; #{0} order by  a.pubTime desc limit 1
+	
+	</select> 
+	<!-- 下一篇 -->
+	 <select id="getNextArticle" resultType="articleColumns">
+		select a.aid,a.title as articleTitle,ac.columnID 
+		from article a join article_columns ac on a.Aid = ac.Aid 
+		where ac.columnID=#{1} and a.state =1 and a.Aid &gt; #{0} order by a.pubTime limit 1;
+
+	</select>
+	
+</mapper>

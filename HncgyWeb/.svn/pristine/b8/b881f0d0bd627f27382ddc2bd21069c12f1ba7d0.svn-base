@@ -1,0 +1,111 @@
+
+package com.ssm.controller.admin;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+public class PageCtroller {
+	
+	@RequestMapping("picture/show")
+	public String showPage(){
+		return "picture/picture-show";
+	}
+	
+	@RequestMapping("/upload/img")
+	public String uploadImg(){
+		return "picture/upload";
+	}
+	
+	@RequestMapping("/loopimg")
+	public String loopImg(){
+		return "index/loopimg";
+	}
+	@RequestMapping("/teacher")
+	public String teacher(){
+		return "index/teacher-team";
+	}
+	
+	
+	@RequestMapping("/")
+	public String login(){
+		return "login";
+	}
+	
+	@RequestMapping(value="/index")
+	public String indexPage(HttpServletRequest request) {
+		request.getSession().removeAttribute("key");
+		request.getSession().removeAttribute("mCode");
+		return "index/index";
+	}
+	//
+	@RequestMapping("/welcome/hello")
+	public String welcomePage() {
+		return "welcome";
+	}
+	//
+	@RequestMapping("/article/list")
+	public String article_listPage() {
+		return "/article/article-list";
+	}
+	@RequestMapping("/article/drafts")
+	public String article_draftsPage() {
+		return "/article/article-drafts";
+	}
+	@RequestMapping("/article/add")
+	public String article_addPage() {
+		return "/article/article-add";
+	}
+	
+	
+	//
+	@RequestMapping("/picture/list")
+	public String picture_listPage() {
+		return "/picture/picture-list";
+	}
+	//
+	@RequestMapping("/column/brand")
+	public String picturn_brand() {
+		return "/column/column-brand";
+	}
+	@RequestMapping("/column/list")
+	public String column_list() {
+		return "/column/column-list";
+	}
+	
+	@RequestMapping("/column/addarticle")
+	public String column_addArticle() {
+		return "/column/column-addarticle";
+	}
+	@RequestMapping("/aritcle/show")
+	public String article_show() {
+		return "/article/article-show";
+	}
+	@RequestMapping("/recovery")
+	public String recovery(){
+		return "article/article-recovery";
+	}
+	@RequestMapping("/edit/article")
+	public String edit_article(){
+		return "article/article-edit";
+	}
+	@RequestMapping("/picturerecovery")
+	public String picturerecovery(){
+		return "picture/picture-recovery";
+	}
+	@RequestMapping("/uploads/img")
+	public String uploads(){
+		return "picture/uploads";
+	}
+		@RequestMapping("/teacher/add")
+		public String teacher_add(){
+			return "index/teacher-add";
+	}
+	@RequestMapping("/kindeditor/article/image_recognition")
+	public String image_recognition(){
+		return "article/image_recognition";
+	}
+}

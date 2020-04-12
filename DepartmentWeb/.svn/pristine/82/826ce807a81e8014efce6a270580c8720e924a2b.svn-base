@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+
+<error-page>
+        <error-code>404</error-code>
+        <location>/index</location>
+   </error-page>
+  
+  <error-page>
+        <error-code>500</error-code>
+        <location>/inex</location>
+   </error-page> 
+  
+  			  <!-- context-param 比你WEB项目还没有完全启动完成.这个动作会比所有的Servlet都要早,所以在启动项目时就加载完成-->
+			  <!-- 配置spring -->
+			  <context-param>
+					 <param-name>contextConfigLocation</param-name>
+					 <param-value>/WEB-INF/spring/applicationContext-*.xml</param-value>
+			 </context-param>
+			 
+			 
+			 
+ 			 <!-- 配置监听器加载spring -->
+ 			 <!-- 
+ 			 ContextLoaderListener的作用:
+ 			 	启动Web容器时，读取在contextConfigLocation中定义的xml文件，
+ 			 	自动装配ApplicationContext的配置信息，并产生WebApplicationContext对象，
+ 			 	然后将这个对象放置在ServletContext的属性里
+ 			  -->
+			 <listener>
+			 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+			 </listener>
+			 
+			 
+			 
+			  <!-- 配置过滤器，解决post的乱码问题 -->
+					 <filter>
+		 <filter-name>encoding</filter-name> 
+		 <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		 <init-param>
+			 <param-name>encoding</param-name>
+			 <param-value>UTF-8</param-value>
+		 </init-param>
+		 <init-param>  
+		         <param-name>forceEncoding</param-name>  
+		         <param-value>true</param-value>  
+		 </init-param>  
+	 </filter>
+	 <filter-mapping>
+		 <filter-name>encoding</filter-name>
+	 	 <url-pattern>/*</url-pattern>
+	 </filter-mapping>
+	 
+	 <!-- 配置SpringMVC -->
+	 <servlet>
+	 <!-- 配置前端控制器 -->
+		 <servlet-name>SSM</servlet-name>
+		 <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+	 <init-param>  
+	 <!-- 指定spring加载springMVC.xml 如果没有这个参数，Spring默认加载web-inf/applicationContext.xml文件。 -->
+		 <param-name>contextConfigLocation</param-name>
+		 <param-value>/WEB-INF/spring/springMVC.xml</param-value>
+	 </init-param>
+		 <!-- 配置springmvc什么时候启动，参数必须为整数 -->
+		 <!-- 如果为0或者大于0，则springMVC随着容器启动而启动 -->
+		 <!-- 如果小于0，则在第一次请求进来的时候启动 -->
+		 <!-- load-on-startup:表示启动容器时刻初始化该servlet的顺序 -->
+		 <load-on-startup>1</load-on-startup>
+	 </servlet>
+	 <servlet-mapping>
+		 <servlet-name>SSM</servlet-name>
+		 <!-- 所有的请求都进入springMVC -->
+		 <url-pattern>/</url-pattern>   <!-- /所有都放行    /*  仅仅拦截jsp -->
+	 </servlet-mapping>
+	 
+	 
+	 <!--  -->
+	     <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/js/*</url-pattern>
+        <url-pattern>/css/*</url-pattern>
+        <url-pattern>/images/*</url-pattern>
+        <url-pattern>/fonts/*</url-pattern>
+    </servlet-mapping>
+	 
+</web-app>

@@ -1,0 +1,28 @@
+package com.ssm.mapper;
+
+import java.util.List;
+import java.util.Map;
+
+import com.ssm.po.Today;
+
+public interface TodayMapper {
+	/**
+	 * 获取所有热门文章
+	 * @return
+	 */
+	public List<Map<String,Object>> findAll();
+
+	/**
+	 * 插入数据
+	 * @param today
+	 * @return
+	 */
+	public int saveToday(Today today);
+	
+	/**
+	 * 删除指定数据
+	 * @param aid
+	 * @return
+	 */
+	public int delToday(int aid);
+}

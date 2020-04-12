@@ -1,0 +1,19 @@
+package com.ssm.service.admin.oline;
+
+import java.util.HashMap;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ssm.mapper.OlineMapper;
+@Service
+public class CommentServiceImpl implements CommentService {
+	@Autowired
+	private OlineMapper mapper;
+	@Override
+	public List<HashMap<String,Object>> findOlineByState() {
+		return mapper.findOlineByState();
+	}
+
+}

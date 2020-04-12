@@ -1,0 +1,44 @@
+package com.ssm.po;
+
+public class HotArticle {
+	private int id;
+	private int aid;
+	private String title;
+	private int cid;
+	private int viewCount;
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public int getAid() {
+		return aid;
+	}
+	public void setAid(int aid) {
+		this.aid = aid;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public int getCid() {
+		return cid;
+	}
+	public void setCid(int cid) {
+		this.cid = cid;
+	}
+	public int getViewCount() {
+		return viewCount;
+	}
+	public void setViewCount(int viewCount) {
+		this.viewCount = viewCount;
+	}
+	public HotArticle() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	
+}

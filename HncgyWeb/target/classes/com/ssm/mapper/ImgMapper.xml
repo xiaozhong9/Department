@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.ImgMapper">
+	
+	<!-- 查找指定图片 -->
+	<select id="selectImgById" parameterType="int" resultType="img">
+		select * from img where id =#{id}
+	</select>
+	<!-- 插入图片 -->
+	<insert id="saveImg" parameterType="img">
+		insert img value(0,#{name},#{url},null,#{imgName},#{type},#{catagory},1)
+	</insert>
+	<update id="removeImg">
+		update img set state =-1 where id=#{id}	
+	</update>
+	
+
+	<select id="findLoopAll" resultType="img">
+		select * from img where catagory="1" and state="1"
+	</select>
+	<select id="getPictureAll" resultType="img">
+		select * from img where  state="1" and catagory=0
+	</select>
+
+	<update id="updateloopimg" parameterType="int" >
+	update  img set catagory=0, state=-1 where id=#{id}
+	</update>
+
+	<update id="deleteSelection" parameterType="int[]">
+		update img set state =-1 ,catagory=0 where id in
+		<foreach collection="array" item="ids" separator="," open="(" close=")" >
+			#{ids}
+		</foreach>
+	</update>
+	
+	
+	
+	<delete id="remvoeDustbinImgs" parameterType="int[]">
+		delete from img where id in
+		<foreach collection="array" item="ids" separator="," open="(" close=")" >
+			#{ids}
+		</foreach>
+	</delete>
+	<update id="remvoeimgs" parameterType="int[]">
+	update  img set state=-1 where id in
+		<foreach collection="array" item="ids" separator="," open="(" close=")" >
+			#{ids}
+		</foreach>
+	</update>
+	
+	<select id="PictureRecovery" resultType="img">
+		select * from img where state="-1"
+	</select>
+	<delete id="dustbinImg" parameterType="int">
+		delete from img where id=#{id}
+	</delete>
+	
+	<update id="reductionPicture" parameterType="int">
+	update  img set state =1 ,catagory=0 where id=#{id}
+	</update>
+	
+	<select id="findPoolImgs" resultType="string">
+		select imgName from img where catagory="1"	and state="1" order by id asc
+	</select>
+	
+	<select id="findUrlById" resultType="string">
+		select url from img
+		where id in 
+		<foreach collection="ids" item="id" separator="," open="(" close=")">
+			id	
+		</foreach>
+	</select>
+
+</mapper>
